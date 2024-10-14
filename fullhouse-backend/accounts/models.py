@@ -8,7 +8,7 @@ MAX_LENGTHS = {
         "additional_notes": 2000
     }
 
-CHOICES = {
+CHOICES = { # TODO: add choices for each of these, should be format int: str
         "gender": NotImplemented
         "sexual_orientation": NotImplemented
         "year": NotImplemented
@@ -63,7 +63,7 @@ CHOICES = {
         pref_night_guests = models.IntegerField(choices=CHOICES["guests"])
         pref_animals = models.BooleanField(default= True)
         pref_sleep_light = models.IntegerField(choices=CHOICES["sleep_light"])
-        pref_sleep_noise = models.IntegerField(choices=CHOICES["sleep_noise"])
+        pref_sleep_noise = models.IntegerField(choices=CHOICES["sleep_noise")
 
 
 
