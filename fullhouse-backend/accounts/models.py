@@ -83,15 +83,16 @@ from django.db import models
         date_of_birth = models.DateField(editable=False) # initialized upon verification
         age = models.GeneratedField() # TODO: set up generating expression and required args
         year = models.IntegerField(choices=Year.choices)
+        phone_num = models.PhoneNumberField()
 
         gender = models.IntegerField(choices = Gender.choices)
-        dietary_restrictions = models.CharField(max_length=MAX_LENGTHS["dietary_restrictions"])
+        dietary_restrictions = models.CharField(max_length=MAX_LENGTHS["dietary_restrictions"], blank=True)
         sleep_time_weekday = models.IntegerField(choices = SleepTime.choices)
         sleep_time_weekend = models.IntegerField(choices = SleepTime.choices)
         wake_time_weekday = models.IntegerField(choices = WakeTime.choices)
         wake_time_weekend = models.IntegerField(choices = WakeTime.choices)
-        animals = models.CharField(max_length=MAX_LENGTHS["animals"])
-        additional_notes = models.CharField(max_length = MAX_LENGTHS["additional_notes"])
+        animals = models.CharField(max_length=MAX_LENGTHS["animals"], blank=True)
+        additional_notes = models.CharField(max_length = MAX_LENGTHS["additional_notes"], blank=True)
 
         # PREFERENCES they would like out of the other roommate
         # Some of these have defaults, "don't care" is a specific option they must opt into
@@ -99,8 +100,8 @@ from django.db import models
         pref_smoking =  models.BooleanField(default=False) 
         pref_cleaniness = models.IntegerField(choices = Cleanliness.choices)
         pref_temperature = models.IntegerField(choices= Temperature.choices)
-        pref_age_min = models.IntegerField()
-        pref_age_max = models.IntegerField()
+        pref_age_min = models.IntegerField(blank=True)
+        pref_age_max = models.IntegerField(blank=True)
         pref_day_guests = models.IntegerField(choices= GuestPolicy.choices)
         pref_night_guests = models.IntegerField(choices= GuestPolicy.choices)
         pref_animals = models.BooleanField(default= True)
