@@ -85,6 +85,7 @@ class Member(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     verified = models.BooleanField(default= False)
+    account_creation_date = models.DateField(editable=False)
     rooming_status = models.CharField(choices=Status.choices, max_length=200)
 
 
