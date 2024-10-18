@@ -3,6 +3,11 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
+from rest_framework import generics
+from . import models
+from .models import User, Member
+from .serializers import UserSerializer, MemberSerializer
+
 # Create your views here.
 
 def index(request):

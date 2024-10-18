@@ -142,3 +142,9 @@ CORS_ALLOWED_ORIGINS = [ # requests can only be made from here, only allowing ou
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
