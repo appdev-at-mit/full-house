@@ -11,12 +11,6 @@ from .serializers import UserSerializer, MemberSerializer, TinySerializer
 
 # Create your views here.
 
-def index(request):
-    return HttpResponse("Hello, world.")
-
-def user_information(request):
-    return HttpResponse("Wow, this user doesn't have a lot of information. The FBI is gonna work on that.")
-
 def login_user(request):
     return render(request, "login.html", {})
 
@@ -41,7 +35,7 @@ def test_tiny(request):
     """
     test request
     """
-    if request.method == "POST":
+    if request.method == "GET":
         tiny_data = JSONParser().parse(request)
         serializer = TinySerializer(data=tiny_data)
         if serializer.is_valid():

@@ -30,7 +30,6 @@ export default function UserProfileMap() {
     <div className="flex h-screen bg-background">
       {/* Other Users */}
       <div className="w-1/2 p-6 border-r border-border">
-        <h1>Other Users</h1>
         {/* Search Input */}
         <div className="relative mb-6">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -60,6 +59,7 @@ export default function UserProfileMap() {
           <div className="mb-6">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold">About Me</h3>
+              <p>{aboutText}</p>
             </div>
           </div>
 
@@ -67,12 +67,14 @@ export default function UserProfileMap() {
           <div className="mb-6">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold">Location</h3>
+              <p>{locationText}</p>
             </div>
           </div>
 
           {/* Actively looking for a roommate */}
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-semibold">Actively looking for a roommate</h3>
+            <p>{activityStatus.toString()}</p>
           </div>
         </div>
       </div>
