@@ -7,7 +7,7 @@ class TinySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tiny
-        fields = "__all__"
+        fields = ["value"]
 
 class UserSerializer(serializers.ModelSerializer):
 
