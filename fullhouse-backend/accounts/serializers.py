@@ -1,6 +1,13 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from accounts.models import Member
+from accounts.models import Tiny, Member
+
+
+class TinySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Tiny
+        fields = "__all__"
 
 class UserSerializer(serializers.ModelSerializer):
 
@@ -16,7 +23,7 @@ class MemberSerializer(serializers.ModelSerializer):
         fields = ["user", 
                   "verified",
                   "rooming_status",
-                  "profle_pic",
+                  # "profile_pic",
                   "bio",
                   "school",
                   "year",
