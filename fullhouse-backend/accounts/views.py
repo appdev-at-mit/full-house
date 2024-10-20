@@ -7,7 +7,7 @@ from rest_framework import generics
 from rest_framework.parsers import JSONParser
 from . import models
 from .models import User, Member
-from .serializers import UserSerializer, MemberSerializer
+from .serializers import UserSerializer, MemberSerializer, TinySerializer
 
 # Create your views here.
 
@@ -36,3 +36,16 @@ def user_profile(request):
             serializer.save()
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
+
+def test_tiny(request):
+    """
+    test request
+    """
+    if request.method == "POST":
+        tiny_data = JSONParser().parse(request)
+        serializer = TinySerializer(data=tiny_data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
+
