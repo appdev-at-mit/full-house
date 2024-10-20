@@ -8,6 +8,12 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 # Create your models here.
 
+class Tiny(models.Model):
+    """
+    test model
+    """
+    value = models.IntegerField()
+
 class Member(models.Model):
     """
     A person using Full House. OneToOne relation with the built in User class.
@@ -89,7 +95,7 @@ class Member(models.Model):
     rooming_status = models.CharField(choices=Status.choices, max_length=200)
 
 
-    profile_pic = models.ImageField() # TODO: make default image and upload directory
+    # profile_pic = models.ImageField() # TODO: make default image and upload directory
     bio = models.CharField(max_length=MAX_LENGTHS["bio"])
     school = models.TextField() # initialized upon verification
     date_of_birth = models.DateField(editable=False) # initialized upon verification
@@ -112,7 +118,7 @@ class Member(models.Model):
     # Some of these have defaults, "don't care" is a specific option they must opt into
     pref_same_gender = models.BooleanField(default=True)
     pref_smoking =  models.BooleanField(default=False) 
-    pref_cleaniness = models.IntegerField(choices = Cleanliness.choices)
+    pref_cleanliness = models.IntegerField(choices = Cleanliness.choices)
     pref_temperature = models.IntegerField(choices= Temperature.choices)
     pref_age_min = models.IntegerField(blank=True)
     pref_age_max = models.IntegerField(blank=True)
