@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { Mail, Settings, Search, Edit, X } from "lucide-react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { Mail, Settings, Search, Edit } from "lucide-react";
+import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility";
@@ -56,12 +56,18 @@ export default function UserProfileMap() {
   const initData = async () => {
     const data = await fetchUserData();
     setUsername(data.name);
-    setUserClass(data.class)
+    setUserClass(data.class);
   };
 
   const handleMailClick = () => {
     if (isMounted) {
       router.push("/messages");
+    }
+  };
+
+  const handleSettingsClick = () => {
+    if (isMounted) {
+      router.push("/settings");
     }
   };
 
@@ -163,7 +169,7 @@ export default function UserProfileMap() {
             <Input type="search" placeholder="Search for a housemate" className="pl-8" />
           </div>
 
-          <Button variant="outline" className="mb-auto">
+          <Button variant="outline" className="mb-auto" onClick={handleSettingsClick}>
             <Settings className="mr-2 h-4 w-4" />
             Settings
           </Button>

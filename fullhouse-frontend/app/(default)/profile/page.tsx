@@ -39,20 +39,19 @@ export default function UserProfileMap() {
       {/* User Profile */}
       <div className="w-1/2 p-6 relative">
         <div className="flex flex-col">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center">
-              <Image
-                src="/pfp.png"
-                alt="Profile Picture"
-                width={64}
-                height={64}
-                className="rounded-full mr-4"
-              />
-              <div>
-                <h2 className="text-xl font-bold">{username}</h2>
-                <p className="text-muted-foreground">{userClass}</p>
-              </div>
-            </div>
+          <div className="flex items-start mb-6">
+            <Image
+              src="/pfp.png"
+              alt="Profile Picture"
+              width={250} // Adjust width as needed (25% of the container if it's 640px wide)
+              height={250} // Maintain aspect ratio
+              className="rounded-full mr-4"
+            />
+          </div>
+
+          <div className="mb-6 flex flex-col justify-center">
+            <h2 className="text-xl font-bold">{username}</h2>
+            <p className="text-muted-foreground">{userClass}</p>
           </div>
 
           {/* About Me Section */}
@@ -76,6 +75,8 @@ export default function UserProfileMap() {
             <h3 className="text-lg font-semibold">Actively looking for a roommate</h3>
             <p>{activityStatus.toString()}</p>
           </div>
+
+          <Button variant="outline" className="mt-2">Message</Button>
         </div>
       </div>
     </div>
