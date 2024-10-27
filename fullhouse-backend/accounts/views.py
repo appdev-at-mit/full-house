@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-
+from django.core import serializers
 from rest_framework import generics
 from rest_framework.parsers import JSONParser
 from . import models
@@ -22,7 +22,10 @@ def user_profile(request):
     """
     if request.method == "GET":
         # we need a request.username attribute to get out the user
-        raise NotImplementedError
+        request_data = JSONParser().parse(request)
+        out_user = User.objects.get(username=request_data.username)
+        out_member = Member.objects.get(user=out_user)
+        return serializers.serialize("json", out_member)
     elif request.method == "POST":
         user_data = JSONParser().parse(request)
         serializer = MemberSerializer(data=user_data)
