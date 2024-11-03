@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function OtherProfile() {
     // Replace these constants with data from backend
-    const otherPerson = "Rahsun";
+    const otherPerson = "Rahsun Komatsuzaki-Fields";
     const bio = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
     const location = "Cambridge MA"
     const phone = "555-123-4567"
@@ -41,7 +41,7 @@ export default function OtherProfile() {
                     {/* Replce using components and a list of people; for now I have four duplicate users as an example*/}
                     <div className="flex flex-row grid grid-cols-3 gap-4">
                         <div className="p-10 bg-white rounded-lg shadow-md">
-                            <div className="flex justify-around">
+                            <div className="flex justify-around space-x-5 m-3">
                                 <Image
                                 src="/kirbyPop.jpg"
                                 alt="Profile Picture"
@@ -58,7 +58,7 @@ export default function OtherProfile() {
                             </div>
                         </div>
                         <div className="p-10 bg-white rounded-lg shadow-md">
-                            <div className="flex justify-around">
+                            <div className="flex justify-around space-x-5 m-3">
                                 <Image
                                 src="/kirbyPop.jpg"
                                 alt="Profile Picture"
@@ -75,7 +75,7 @@ export default function OtherProfile() {
                             </div>
                         </div>
                         <div className="p-10 bg-white rounded-lg shadow-md">
-                            <div className="flex justify-around">
+                            <div className="flex justify-around space-x-5 m-3">
                                 <Image
                                 src="/kirbyPop.jpg"
                                 alt="Profile Picture"
@@ -92,7 +92,7 @@ export default function OtherProfile() {
                             </div>
                         </div>
                         <div className="p-10 bg-white rounded-lg shadow-md">
-                            <div className="flex justify-around">
+                            <div className="flex justify-around space-x-5 m-3">
                                 <Image
                                 src="/kirbyPop.jpg"
                                 alt="Profile Picture"
