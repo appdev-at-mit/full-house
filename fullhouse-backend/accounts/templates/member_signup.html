@@ -1,0 +1,36 @@
+<!-- templates/member_signup.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Signup</title>
+</head>
+<body>
+    <h1>Create Your Member Profile</h1>
+    <form method="post" id="member-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Create Profile</button>
+    </form>
+
+    <script>
+        document.getElementById('member-form').onsubmit = async (e) => {
+            e.preventDefault(); // Prevent normal form submission
+            const formData = new FormData(e.target);
+            const response = await fetch('/api/member/signup/', {
+                method: 'POST',
+                body: formData,
+            });
+            if (response.ok) {
+                alert('Profile created successfully!');
+                // Optionally redirect or update UI
+            } else {
+                const errorData = await response.json();
+                alert('Error: ' + JSON.stringify(errorData));
+            }
+        };
+    </script>
+</body>
+</html>
