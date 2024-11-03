@@ -45,8 +45,8 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="flex flex-col h-screen p-6 bg-background items-center justify-between">
-      <div className="flex items-center mb-4">
+    <div className="flex flex-col h-screen p-6 bg-background items-center">
+      <div className="flex mb-4">
         <button onClick={handleBack} className="mr-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -113,11 +113,15 @@ export default function SettingsPage() {
         <select
           value={privacy}
           onChange={(e) => setPrivacy(e.target.value)}
-          className="w-full mb-4 bg-white border border-gray-300 rounded-md p-2"
+          className="w-full bg-white border border-gray-300 rounded-md p-2"
         >
           <option value="Public">Public</option>
+          <option value="Private">Partial (hide location)</option>
           <option value="Private">Private</option>
         </select>
+        <p className="mb-4 text-xs text-gray-500">Public: Anyone can see your profile and location <br></br>
+        Partial: Anyone can see your profile but your location is hidden <br></br>
+        Private: Your profile and location are hidden</p>
 
         <Button onClick={handleSaveChanges} className="mb-4 w-full">Save Changes</Button>
       </div>
