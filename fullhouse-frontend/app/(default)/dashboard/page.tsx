@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { Mail, Settings, Search, Edit } from "lucide-react";
+import { Mail, Settings, Edit } from "lucide-react";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -77,6 +77,10 @@ export default function UserProfileMap() {
 
   const handleSaveClick = (section) => {
     setIsEditing((prev) => ({ ...prev, [section]: false }));
+  };
+
+  const handleSearchHousemateClick = () => {
+    router.push("/profile");
   };
 
   if (!isMounted) {
@@ -163,11 +167,10 @@ export default function UserProfileMap() {
             <Switch checked={activityStatus} onCheckedChange={setActivityStatus} />
           </div>
 
-          {/* Search Input */}
-          <div className="relative mb-6">
-            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input type="search" placeholder="Search for a housemate" className="pl-8" />
-          </div>
+          {/* Search for Housemate Button */}
+          <Button variant="outline" className="mb-6" onClick={handleSearchHousemateClick}>
+            Search for a housemate
+          </Button>
 
           <Button variant="outline" className="mb-auto" onClick={handleSettingsClick}>
             <Settings className="mr-2 h-4 w-4" />

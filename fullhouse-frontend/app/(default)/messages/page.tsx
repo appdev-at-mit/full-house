@@ -4,7 +4,8 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Mail, Search } from "lucide-react";
+import { Mail, Search, Home } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const mockConversations = [
   {
@@ -49,6 +50,8 @@ export default function MessagingPage() {
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [messages, setMessages] = useState(mockMessages);
   const [newMessage, setNewMessage] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     if (selectedConversation) {
@@ -64,24 +67,39 @@ export default function MessagingPage() {
       id: messages.length + 1,
       sender: "You",
       text: newMessage,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     };
 
     setMessages([...messages, message]);
     setNewMessage("");
   };
 
+  const filteredConversations = conversations.filter((conversation) =>
+    conversation.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="flex h-screen bg-background">
       {/* Conversations List */}
       <div className="w-1/3 border-r border-border p-4 overflow-y-auto">
-        <h2 className="text-xl font-bold mb-4">Messages</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold">Messages</h2>
+          <Button variant="outline" onClick={() => router.push("/dashboard")}>
+            <Home className="mr-2 h-4 w-4" /> Dashboard
+          </Button>
+        </div>
         <div className="relative mb-4">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input type="search" placeholder="Search" className="pl-8" />
+          <Input
+            type="search"
+            placeholder="Search"
+            className="pl-8"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
         </div>
         <div className="space-y-2">
-          {conversations.map((conversation) => (
+          {filteredConversations.map((conversation) => (
             <div
               key={conversation.id}
               className={`flex items-center p-2 cursor-pointer rounded-lg hover:bg-muted ${
@@ -100,7 +118,7 @@ export default function MessagingPage() {
                 <h3 className="font-semibold">{conversation.name}</h3>
                 <p className="text-sm text-muted-foreground">{conversation.lastMessage}</p>
               </div>
-              <span className="text-xs text-gray-400">{conversation.time}</span> {/* Updated color */}
+              <span className="text-xs text-gray-400">{conversation.time}</span>
             </div>
           ))}
         </div>
@@ -114,9 +132,13 @@ export default function MessagingPage() {
             <div className="flex-1 p-4 overflow-y-auto">
               {messages.map((message) => (
                 <div key={message.id} className={`flex ${message.sender === "You" ? "justify-end" : "justify-start"}`}>
-                  <div className={`p-3 rounded-2xl ${message.sender === "You" ? "bg-blue-500 text-white" : "bg-gray-200 text-black"}`}>
+                  <div
+                    className={`p-3 rounded-2xl ${
+                      message.sender === "You" ? "bg-blue-500 text-white" : "bg-gray-200 text-black"
+                    }`}
+                  >
                     <p>{message.text}</p>
-                    <span className="text-xs text-gray-400">{message.time}</span> {/* Updated color */}
+                    <span className="text-xs text-gray-400">{message.time}</span>
                   </div>
                 </div>
               ))}
@@ -133,7 +155,7 @@ export default function MessagingPage() {
             </div>
           </>
         ) : (
-          <p className="text-center text-gray-500">Select a conversation to start messaging.</p>
+          <p className="mt-8 text-center text-gray-500">Select a conversation to start messaging.</p>
         )}
       </div>
     </div>
