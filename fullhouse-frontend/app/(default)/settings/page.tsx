@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -15,22 +14,19 @@ export default function SettingsPage() {
   const [profilePicture, setProfilePicture] = useState(null);
 
   const handleLogout = () => {
-    // Handle logout logic here
     console.log("Logged out");
   };
 
   const handleDeleteAccount = () => {
-    // Handle account deletion logic here
     console.log("Account deleted");
   };
 
   const handleSaveChanges = () => {
-    // Handle saving changes logic here
     console.log("Changes saved");
   };
 
   const handleBack = () => {
-    router.push("/dashboard"); // Navigate back to the dashboard
+    router.push("/dashboard");
   };
 
   const handleProfilePictureChange = (e) => {
@@ -45,8 +41,8 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="flex flex-col h-screen p-6 bg-background items-center">
-      <div className="flex mb-4">
+    <div className="flex flex-col h-screen p-6 bg-background items-center mb-12">
+      <div className="flex mb-4 w-full max-w-md text-left">
         <button onClick={handleBack} className="mr-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -71,7 +67,7 @@ export default function SettingsPage() {
           <label className="block text-sm font-semibold mb-1">Profile Picture</label>
           <div className="relative mb-2">
             <img
-              src={profilePicture || "/pfp.png"} // Use a default image if none is selected
+              src={profilePicture || "/pfp.png"}
               alt="Profile"
               className="w-24 h-24 rounded-full border-2 border-gray-300 object-cover"
             />
@@ -91,7 +87,7 @@ export default function SettingsPage() {
           placeholder="Edit your bio..."
           className="mb-4 w-full"
         />
-        
+
         <label className="block text-sm font-semibold mb-1">Location</label>
         <Input
           value={location}
@@ -99,7 +95,7 @@ export default function SettingsPage() {
           placeholder="Edit your location..."
           className="mb-4 w-full"
         />
-        
+
         <label className="block text-sm font-semibold mb-1">Actively looking for roommate</label>
         <select
           value={privacy}
@@ -108,7 +104,7 @@ export default function SettingsPage() {
           <option value="True">Yes</option>
           <option value="False">No</option>
         </select>
-        
+
         <label className="block text-sm font-semibold mb-1">Privacy</label>
         <select
           value={privacy}
@@ -119,9 +115,11 @@ export default function SettingsPage() {
           <option value="Private">Partial (hide location)</option>
           <option value="Private">Private</option>
         </select>
-        <p className="mb-4 text-xs text-gray-500">Public: Anyone can see your profile and location <br></br>
-        Partial: Anyone can see your profile but your location is hidden <br></br>
-        Private: Your profile and location are hidden</p>
+        <p className="mb-4 text-xs text-gray-500 text-left">
+          Public: Anyone can see your profile and location<br />
+          Partial: Anyone can see your profile but your location is hidden<br />
+          Private: Your profile and location are hidden
+        </p>
 
         <Button onClick={handleSaveChanges} className="mb-4 w-full">Save Changes</Button>
       </div>
