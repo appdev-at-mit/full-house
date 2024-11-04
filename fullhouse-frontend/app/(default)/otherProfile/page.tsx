@@ -1,6 +1,7 @@
 import { Biohazard } from "lucide-react";
 import { Button } from "@/components/ui/button"
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function OtherProfile() {
     // Replace these constants with data from backend
@@ -9,6 +10,7 @@ export default function OtherProfile() {
     const location = "Cambridge MA"
     const phone = "555-123-4567"
     const email = "rahsunk@mit.edu"
+    // const router = useRouter();
 
     return(
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
@@ -32,6 +34,7 @@ export default function OtherProfile() {
                         <p>Phone: {phone}</p>
                         <p>Email: {email}</p>
                         <Button variant="default" className="my-3">
+                        {/* <Button variant="default" className="my-3" onClick={() => router.push("/messages")}> */}
                             Message
                         </Button>
                     </div>
