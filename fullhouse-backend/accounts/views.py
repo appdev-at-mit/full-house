@@ -1,8 +1,10 @@
 import datetime
+import json
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.core import serializers
+from django.core.serializers.json import DjangoJSONEncoder
 from rest_framework import generics
 from rest_framework.parsers import JSONParser
 from rest_framework.views import APIView
@@ -92,6 +94,12 @@ class MemberProfileView(APIView):
         user_data = JSONParser().parse(request)
         serializer = MemberSerializer(member, data=user_data)
         return self.save_user(serializer)
+
+    def dump(self, request, format=None):
+        all_users = list(Member.objects.all()) # get all the members
+        serialized = json.dumps(all_users, cls=DjangoJSONEncoder)
+        return JsonResponse(serialized, safe=False)
+
 
 def test_tiny(request):
     """
