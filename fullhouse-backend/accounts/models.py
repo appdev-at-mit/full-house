@@ -4,12 +4,6 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 # Create your models here.
 
-class Tiny(models.Model):
-    """
-    test model
-    """
-    value = models.IntegerField()
-
 class Member(models.Model):
     """
     A person using Full House. OneToOne relation with the built in User class.
@@ -89,6 +83,7 @@ class Member(models.Model):
     verified = models.BooleanField(default= False)
     account_creation_date = models.DateField(editable=False)
     rooming_status = models.CharField(choices=Status.choices, max_length=200)
+    private_location = models.BooleanField(default=True)
 
 
     # profile_pic = models.ImageField() # TODO: make default image and upload directory
