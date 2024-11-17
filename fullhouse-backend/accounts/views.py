@@ -42,12 +42,11 @@ class MemberProfileView(APIView):
     """
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
-   
+  
+
     def get_member(func):
         """
-        Decorator to get a member given a username. If either the user
-        or member is not found, returns the error response and a False flag.
-        Otherwise, returns the member object and a True flag in a tuple.
+        Decorator to return a member and the original request associated with it.
         """
         def api_func(self, request, format=None):
             username = request.query_params.get("username")
@@ -60,27 +59,39 @@ class MemberProfileView(APIView):
                 return JsonResponse({"error": "User not found"}, status=404), False
             except Member.DoesNotExist:
                 return JsonResponse({"error": "Member profile not found"}, status=404), False
-            return func(self, out_member)
+            return func(self, request, out_member)
 
         return api_func
 
-    @get_member
-    def get(self, member):
-        serializer = MemberSerializer(member)
-        return JsonResponse(serializer.data, safe=False)
-
-    def post(self, request, format=None):
-        user_data = JSONParser().parse(request)
-        serializer = MemberSerializer(data=user_data)
+    def save_user(self, serializer):
+        """
+        Helper to save to database if it is valid.
+        """
         if serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
 
     @get_member
-    def delete(self, member):
+    def get(self, request, member):
+        serializer = MemberSerializer(member)
+        return JsonResponse(serializer.data, safe=False)
+
+    def post(self, request, format=None):
+        user_data = JSONParser().parse(request)
+        serializer = MemberSerializer(data=user_data)
+        return self.save_user(serializer)
+
+    @get_member
+    def delete(self, request, member):
         member.delete()
         return JsonResponse(status=204)
+
+    @get_member
+    def put(self, request, member):
+        user_data = JSONParser().parse(request)
+        serializer = MemberSerializer(member, data=user_data)
+        return self.save_user(serializer)
 
 def test_tiny(request):
     """
