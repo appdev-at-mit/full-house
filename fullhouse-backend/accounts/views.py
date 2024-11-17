@@ -15,6 +15,7 @@ from .forms import MemberForm
 from .models import Member
 
 @csrf_exempt
+@api_view(['GET', 'POST'])
 def member_signup(request):
     if request.method == 'GET':
         form = MemberForm()
