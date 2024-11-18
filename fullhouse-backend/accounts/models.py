@@ -1,3 +1,5 @@
+import datatime
+from dateutil.relativedelta import relativedelta
 from django.db import models
 from django.contrib.auth.models import User
 from phonenumber_field.modelfields import PhoneNumberField
@@ -90,9 +92,6 @@ class Member(models.Model):
     bio = models.CharField(max_length=MAX_LENGTHS["bio"])
     school = models.TextField() # initialized upon verification
     date_of_birth = models.DateField(editable=False) # initialized upon verification
-    # age = models.GeneratedField(expression=18, 
-    #                             output_field=models.IntegerField, 
-    #                             db_persist=True) # TODO: set up generating expression and required args
     year = models.IntegerField(choices=Year.choices)
     phone_num = PhoneNumberField(blank=False, max_length=300)
 
@@ -117,4 +116,8 @@ class Member(models.Model):
     pref_night_guests = models.IntegerField(choices= GuestPolicy.choices)
     pref_animals = models.BooleanField(default= True)
     pref_sleep_light = models.IntegerField(choices= SleepLightLevel.choices)
+
+    @property
+    def age(self):
+        return relativedelta(date.today(), self.date_of_birth).years
 

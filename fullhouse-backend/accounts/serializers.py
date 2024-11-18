@@ -2,13 +2,6 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from accounts.models import Tiny, Member
 
-
-class TinySerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Tiny
-        fields = ["value"]
-
 class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -49,6 +42,7 @@ class MemberSerializer(serializers.ModelSerializer):
                   ]
         read_only_fields = ["date_of_birth",
                             "account_creation_date",
+                            "age",
                             ]
 
 
