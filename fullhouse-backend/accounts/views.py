@@ -58,9 +58,9 @@ class MemberProfileView(APIView):
                 out_user = User.objects.get(username=username)
                 out_member = Member.objects.get(user=out_user)
             except User.DoesNotExist:
-                return JsonResponse({"error": "User not found"}, status=404), False
+                return JsonResponse({"error": "User not found"}, status=404)
             except Member.DoesNotExist:
-                return JsonResponse({"error": "Member profile not found"}, status=404), False
+                return JsonResponse({"error": "Member profile not found"}, status=404) 
             return func(self, request, out_member)
 
         return api_func
