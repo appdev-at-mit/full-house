@@ -75,7 +75,7 @@ class MemberProfileView(APIView):
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
 
-    @get_member
+    @MemberProfileView.get_member
     def get(self, request, member):
         serializer = MemberSerializer(member)
         return JsonResponse(serializer.data, safe=False)
@@ -85,12 +85,12 @@ class MemberProfileView(APIView):
         serializer = MemberSerializer(data=user_data)
         return self.save_user(serializer)
 
-    @get_member
+    @MemberProfileView.get_member
     def delete(self, request, member):
         member.delete()
         return JsonResponse(status=204)
 
-    @get_member
+    @MemberProfileView.get_member
     def put(self, request, member):
         user_data = JSONParser().parse(request)
         serializer = MemberSerializer(member, data=user_data)
