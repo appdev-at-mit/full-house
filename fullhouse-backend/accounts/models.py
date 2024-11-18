@@ -83,7 +83,7 @@ class Member(models.Model):
     verified = models.BooleanField(default= False)
     account_creation_date = models.DateField(editable=False)
     rooming_status = models.CharField(choices=Status.choices, max_length=200)
-    private_location = models.BooleanField(default=True)
+    private_location = models.BooleanField(default=True) # DO NOT SHOW USERS with private location true
 
 
     # profile_pic = models.ImageField() # TODO: make default image and upload directory

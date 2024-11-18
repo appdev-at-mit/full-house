@@ -96,7 +96,26 @@ class MemberProfileView(APIView):
         return self.save_user(serializer)
 
     def dump(self, request, format=None):
-        all_users = list(Member.objects.all()) # get all the members
+        """
+        Returns all relevant users as a JSON. If the request `only_active`
+        field is set to False, it will return all users that are either
+        actively looking for a roommate or have turned off location privacy.
+        Users that have turned on location privacy and are inactive will
+        never be accessed by the frontend.
+        """
+        def exclude_inactive():
+            return {'rooming_status': Member.Status.INACTIVE}
+        def exclude_private():
+            return {'private_location': True}
+
+        request_data = JSONParser().parse(request)
+        only_active = request_data.get('only_active', True)
+        filter = exclude_inactive() if only_active else exclude_private()
+
+        # get members not satisfying the filter
+        all_users = list(Member.objects.exclude(**filter)) 
+        
+        # serialize and return
         serialized = json.dumps(all_users, cls=DjangoJSONEncoder)
         return JsonResponse(serialized, safe=False)
 
