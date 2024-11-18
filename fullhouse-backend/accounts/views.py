@@ -39,8 +39,9 @@ def login_user(request):
 class MemberProfileView(APIView):
     """
     Gets and posts user information for the profile page.
-    GET: requires a username attribute in the query parameters
+    GET, DELETE, PUT: requires a username attribute in the query parameters
     POST: requires a JSON of information to store
+    DUMP: optionally include a `only_active` field in the request (default True)
     """
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
