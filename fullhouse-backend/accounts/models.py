@@ -1,10 +1,14 @@
 import datatime
+import typing
+from geopy import geocoders
 from dateutil.relativedelta import relativedelta
 from django.db import models
 from django.contrib.auth.models import User
 from phonenumber_field.modelfields import PhoneNumberField
 
-# Create your models here.
+GEONAMES_USERNAME = 'full_stack' # free account, hard coded username
+
+gn = geocoders.GeoNames(username=GEONAMES_USERNAME)
 
 class Member(models.Model):
     """
@@ -86,6 +90,11 @@ class Member(models.Model):
     account_creation_date = models.DateField(editable=False)
     rooming_status = models.CharField(choices=Status.choices, max_length=200)
     private_location = models.BooleanField(default=True) # DO NOT SHOW USERS with private location true
+    city_name = models.CharField(max_length=255)
+    state_name = models.CharField(max_length=2,
+                                  error_messages={
+                                      'max_length': 'State names must be two letter abbreviations.'
+                                      })
 
 
     # profile_pic = models.ImageField() # TODO: make default image and upload directory
@@ -120,4 +129,10 @@ class Member(models.Model):
     @property
     def age(self):
         return relativedelta(date.today(), self.date_of_birth).years
+    
+    @property
+    def city_coords(self) -> tuple[float, float]:
+        loc_name = f'{self.city_name}, {self.state_name}'
+        loc = gn.geocode(loc_name)
+        return (loc.latitude, loc.longitude)
 

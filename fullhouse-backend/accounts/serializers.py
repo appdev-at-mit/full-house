@@ -43,6 +43,7 @@ class MemberSerializer(serializers.ModelSerializer):
         read_only_fields = ["date_of_birth",
                             "account_creation_date",
                             "age",
+                            "city_coords",
                             ]
 
 
