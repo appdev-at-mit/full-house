@@ -24,7 +24,7 @@ const customIcon = new L.Icon({
 
 // Mock data for map pins
 const mapPins = [
-  { id: 1, name: "Josie", about: "MIT 2027", lat: 42.3601, lng: -71.0942 } // replace with API call
+  { id: 1, name: "Josie", about: "MIT 2027", lat: 42.3601, lng: -71.0942 } // replace with API call dump and Geocoding
 ];
 
 export default function UserProfileMap() {
