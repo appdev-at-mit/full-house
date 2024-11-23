@@ -52,8 +52,8 @@ def member_signup(request):
 
     elif request.method == "POST":
         form = MemberForm(request.POST)
-        print(form.data)
         if form.is_valid():
+            print("VALID")
             new_user = User(username=form.data['username'], 
                             first_name=form.data['first_name'],
                             last_name = form.data['last_name'],
@@ -63,6 +63,7 @@ def member_signup(request):
             # new_member.user = request.user
             new_member.user = new_user
             new_member.account_creation_date = datetime.date.today()
+            new_member.user.save()
             new_member.save()
             return JsonResponse({"message": "Member profile created successfully"}, status=201)
         return JsonResponse(form.errors, status=400)
