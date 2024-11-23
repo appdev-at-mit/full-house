@@ -16,6 +16,7 @@ class MemberForm(forms.ModelForm):
             'phone_num',
             'gender',
             'dietary_restrictions',
+            'date_of_birth',
             'sleep_time_weekday',
             'sleep_time_weekend',
             'wake_time_weekday',
@@ -46,6 +47,7 @@ class MemberForm(forms.ModelForm):
         'phone_num': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your phone number'}),
         'gender': forms.Select(attrs={'class': 'form-select'}),
         'dietary_restrictions': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter dietary restrictions'}),
+        'date_of_birth': forms.DateInput({'class': 'form-control', 'placeholder': 'Enter date of birth'})
         'sleep_time_weekday': forms.Select(attrs={'class': 'form-select'}),
         'sleep_time_weekend': forms.Select(attrs={'class': 'form-select'}),
         'wake_time_weekday': forms.Select(attrs={'class': 'form-select'}),
