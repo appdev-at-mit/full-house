@@ -49,10 +49,7 @@ def member_signup(request):
         form = MemberForm(request.POST)
         if form.is_valid():
             new_member = form.save(commit=False)
-            if request.user.is_authenticated:
-                new_member.user = request.user
-            else:
-                return JsonResponse({"error": "User must be logged in to sign up"}, status=403)
+            new_member.user = request.user
             new_member.account_creation_date = datetime.date.today()
             new_member.save()
             return JsonResponse({"message": "Member profile created successfully"}, status=201)
