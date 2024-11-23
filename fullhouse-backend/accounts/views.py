@@ -54,8 +54,14 @@ def member_signup(request):
         form = MemberForm(request.POST)
         print(form.data)
         if form.is_valid():
+            new_user = User(username=request.data.username, 
+                            first_name=request.data.first_name,
+                            last_name = request.data.last_name,
+                            email = request.data.email,
+                            password = request.data.password)
             new_member = form.save(commit=False)
-            new_member.user = request.user
+            # new_member.user = request.user
+            new_member.user = new_user
             new_member.account_creation_date = datetime.date.today()
             new_member.save()
             return JsonResponse({"message": "Member profile created successfully"}, status=201)
