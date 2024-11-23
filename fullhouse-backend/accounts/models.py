@@ -105,7 +105,7 @@ class Member(models.Model):
     # profile_pic = models.ImageField() # TODO: make default image and upload directory
     bio = models.CharField(max_length=MAX_LENGTHS["bio"])
     school = models.TextField() # initialized upon verification
-    date_of_birth = models.DateField(editable=False) # initialized upon verification
+    date_of_birth = models.DateField() # initialized upon verification
     year = models.IntegerField(choices=Year.choices)
     phone_num = PhoneNumberField(blank=False, max_length=300)
 
