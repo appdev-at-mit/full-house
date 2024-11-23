@@ -23,26 +23,30 @@ def member_signup(request):
         form_fields = []
 
         for field in form:
-            # Determine the input type by inspecting the widget type
             widget = field.field.widget
-            input_type = "text"  # Default to text if no specific input type
+            input_type = "text"
+            options = None
+
             if hasattr(widget, 'input_type'):
                 input_type = widget.input_type
+                if input_type == 'select':
+                    options = [{"value": choice[0], "label": choice[1]} for choice in field.field.choices]
             elif isinstance(widget, forms.Textarea):
                 input_type = "textarea"
             elif isinstance(widget, forms.CheckboxInput):
                 input_type = "checkbox"
             elif isinstance(widget, forms.DateInput):
                 input_type = "date"
-            elif isinstance(widget, forms.Select):
-                input_type = "select"
-            
+
+            print(field.field.widget)
+
             form_fields.append({
                 "name": field.name,
                 "label": field.label,
                 "type": input_type,
+                "options": options,
             })
-        
+
         return JsonResponse({"form_fields": form_fields}, status=200)
 
     elif request.method == "POST":

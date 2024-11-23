@@ -85,6 +85,10 @@ class Member(models.Model):
 
     # actual attributes
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    username = models.CharField(max_length=150, unique=True)
+    password = models.CharField(max_length=128)
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
 
     verified = models.BooleanField(default= False)
     account_creation_date = models.DateField(editable=False)
@@ -135,4 +139,3 @@ class Member(models.Model):
         loc_name = f'{self.city_name}, {self.state_name}'
         loc = gn.geocode(loc_name)
         return (loc.latitude, loc.longitude)
-
