@@ -13,20 +13,25 @@ export default function LoginPage() {
   // Handles login
   const handleLogin = async () => {
     try {
-      const response = await fetch("http:127.0.0.1.8000/api/login_user/", {
+      const response = await fetch("http://127.0.0.1:8000/api/login_user/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ username, password }),
       });
+
       if (response.ok) {
         // Redirect to dashboard on successful login
         router.push("/dashboard");
       } else {
-        // Handle login error
+        // Handle error when account doesn't exist or incorrect credentials
         const errorData = await response.json();
-        alert(errorData.message || "Login failed");
+        if (errorData.message === "User not found" || errorData.message === "Incorrect password") {
+          alert("Invalid username or password");
+        } else {
+          alert(errorData.message || "Login failed");
+        }
       }
     } catch (error) {
       console.error("Error logging in:", error);

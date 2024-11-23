@@ -1,14 +1,14 @@
+import datetime
+import typing
+from geopy import geocoders
+from dateutil.relativedelta import relativedelta
 from django.db import models
 from django.contrib.auth.models import User
 from phonenumber_field.modelfields import PhoneNumberField
 
-# Create your models here.
+GEONAMES_USERNAME = 'full_stack' # free account, hard coded username
 
-class Tiny(models.Model):
-    """
-    test model
-    """
-    value = models.IntegerField()
+gn = geocoders.GeoNames(username=GEONAMES_USERNAME)
 
 class Member(models.Model):
     """
@@ -89,15 +89,18 @@ class Member(models.Model):
     verified = models.BooleanField(default= False)
     account_creation_date = models.DateField(editable=False)
     rooming_status = models.CharField(choices=Status.choices, max_length=200)
+    private_location = models.BooleanField(default=True) # DO NOT SHOW USERS with private location true
+    city_name = models.CharField(max_length=255)
+    state_name = models.CharField(max_length=2,
+                                  error_messages={
+                                      'max_length': 'State names must be two letter abbreviations.'
+                                      })
 
 
     # profile_pic = models.ImageField() # TODO: make default image and upload directory
     bio = models.CharField(max_length=MAX_LENGTHS["bio"])
     school = models.TextField() # initialized upon verification
     date_of_birth = models.DateField(editable=False) # initialized upon verification
-    # age = models.GeneratedField(expression=18, 
-    #                             output_field=models.IntegerField, 
-    #                             db_persist=True) # TODO: set up generating expression and required args
     year = models.IntegerField(choices=Year.choices)
     phone_num = PhoneNumberField(blank=False, max_length=300)
 
@@ -122,4 +125,14 @@ class Member(models.Model):
     pref_night_guests = models.IntegerField(choices= GuestPolicy.choices)
     pref_animals = models.BooleanField(default= True)
     pref_sleep_light = models.IntegerField(choices= SleepLightLevel.choices)
+
+    @property
+    def age(self):
+        return relativedelta(date.today(), self.date_of_birth).years
+    
+    @property
+    def city_coords(self) -> tuple[float, float]:
+        loc_name = f'{self.city_name}, {self.state_name}'
+        loc = gn.geocode(loc_name)
+        return (loc.latitude, loc.longitude)
 
