@@ -1,5 +1,6 @@
 import datetime
 import json
+import re
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login, logout
@@ -51,6 +52,7 @@ def member_signup(request):
 
     elif request.method == "POST":
         form = MemberForm(request.POST)
+        print(form.data)
         if form.is_valid():
             new_member = form.save(commit=False)
             new_member.user = request.user

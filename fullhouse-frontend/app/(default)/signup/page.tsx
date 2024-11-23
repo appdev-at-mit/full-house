@@ -42,8 +42,19 @@ const SignupPage: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+  
+    // Convert `formData` to URL-encoded format
+    const formEncodedData = new URLSearchParams();
+    Object.entries(formData).forEach(([key, value]) => {
+      formEncodedData.append(key, String(value));
+    });
+  
     axios
-      .post("http://127.0.0.1:8000/api/member_signup/", formData)
+      .post("http://127.0.0.1:8000/api/member_signup/", formEncodedData, {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      })
       .then((response) => {
         setSuccessMessage(response.data.message);
         setErrorMessages({});
@@ -62,6 +73,7 @@ const SignupPage: React.FC = () => {
         }
       });
   };
+  
 
   return (
     <div className="signup-container">
