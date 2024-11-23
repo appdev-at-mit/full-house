@@ -1,4 +1,4 @@
-import { Biohazard } from "lucide-react";
+import { Biohazard, Heading3 } from "lucide-react";
 import { Button } from "@/components/ui/button"
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -10,12 +10,23 @@ export default function OtherProfile() {
     const location = "Cambridge MA"
     const phone = "555-123-4567"
     const email = "rahsunk@mit.edu"
+    const preferences = {
+        status: "Not looking for housing",
+        gender: "Male",
+        year: "Senior Undergraduate",
+        sleepTime: "Between 9:00 PM and 11:00 PM",
+        wakeTime: "Before 7:00 AM",
+        cleanliness: "Mess/clutter does not bother me",
+        temperature: "I prefer a relatively cool temperature (below 68F/20C)",
+        guestPolicy: "Spontaneity is great! Anything (within reason) is fine by me.",
+        sleepLightLevel: "No preference",
+    }
     // const router = useRouter();
 
     return(
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
             <div className="flex flex-col justify-between m-10">
-                <div className="p-20 bg-white rounded-lg shadow-md">
+                <div className="p-20 py-5 bg-white rounded-lg shadow-md">
                     <div className="flex justify-around m-5 space-x-10">
                             {/* Replace this temporary image with profile picture of the user (from backend) */}
                         <Image
@@ -37,17 +48,19 @@ export default function OtherProfile() {
                         {/* <Button variant="default" className="my-3" onClick={() => router.push("/messages")}> */}
                             Message
                         </Button>
-                        <select name="preferences">
-                            <option value="">--View Preferences--</option>
-                            <option value="sleepTime">Late night 12:00 - 2:00 AM</option>
-                            <option value="pets">No pets</option>
-                            <option value="tidyness">Little clutter is okay</option>
-                            <option value="guests">Communicate within one week</option>
-                        </select>
+                        <h2>
+                            <h2 className="text-2xl font-bold mb-2">Preferences:</h2>
+                            {Object.entries(preferences).map(([key, value]) => (
+                                <li key={key}>
+                                    <strong>{key.charAt(0).toUpperCase()+key.slice(1).replace(/([A-Z])/g, " $1")}: </strong>
+                                    {value}
+                                </li>
+                                ))}
+                        </h2>
                     </div>
                 </div>
                 <div className="my-5">
-                    <h1 className="my-5">Other people in the same area:</h1>
+                    <h2 className="text-2xl font-bold mb-2 my-5">Other people in the same area:</h2>
                     {/* Replce using components and a list of people; for now I have four duplicate users as an example*/}
                     <div className="flex flex-row grid grid-cols-3 gap-4">
                         <div className="p-10 bg-white rounded-lg shadow-md">
