@@ -5,6 +5,10 @@ class MemberForm(forms.ModelForm):
     class Meta:
         model = Member
         fields = [
+            'username',
+            'password',
+            'first_name',
+            'last_name',
             'bio', 
             'school', 
             'year', 
