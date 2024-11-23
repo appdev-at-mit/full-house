@@ -89,6 +89,7 @@ class Member(models.Model):
     password = models.CharField(max_length=128)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
+    email = models.EmailField()
 
     verified = models.BooleanField(default= False)
     account_creation_date = models.DateField(editable=False)
