@@ -37,6 +37,13 @@ export default function OtherProfile() {
                         {/* <Button variant="default" className="my-3" onClick={() => router.push("/messages")}> */}
                             Message
                         </Button>
+                        <select name="preferences">
+                            <option value="">--View Preferences--</option>
+                            <option value="sleepTime">Late night 12:00 - 2:00 AM</option>
+                            <option value="pets">No pets</option>
+                            <option value="tidyness">Little clutter is okay</option>
+                            <option value="guests">Communicate within one week</option>
+                        </select>
                     </div>
                 </div>
                 <div className="my-5">
