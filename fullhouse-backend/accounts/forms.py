@@ -9,6 +9,7 @@ class MemberForm(forms.ModelForm):
             'password',
             'first_name',
             'last_name',
+            'email',
             'bio',
             'school',
             'year',
