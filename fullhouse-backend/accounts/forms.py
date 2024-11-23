@@ -39,6 +39,7 @@ class MemberForm(forms.ModelForm):
         'password': forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Enter password'}),
         'first_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter first name'}),
         'last_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter last name'}),
+        'email': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your email'}),
         'bio': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Tell us about yourself'}),
         'school': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your school'}),
         'year': forms.Select(attrs={'class': 'form-select'}),
