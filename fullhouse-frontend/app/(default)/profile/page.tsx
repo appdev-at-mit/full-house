@@ -302,7 +302,7 @@ export default function UserProfileMap() {
               <ul className="list-disc list-inside text-gray-700">
                 {Object.entries(selectedUser.preferences).map(([key, value]) => (
                   <li key={key}>
-                    <strong>{key.replace(/([A-Z])/g, " $1")}: </strong>
+                    <strong>{key.charAt(0).toUpperCase()+key.slice(1).replace(/([A-Z])/g, " $1")}: </strong>
                     {value}
                   </li>
                 ))}
