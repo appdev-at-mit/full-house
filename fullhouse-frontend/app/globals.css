@@ -68,11 +68,43 @@ body {
   }
 }
 
+@font-face {
+  font-family: 'VintageFont';
+  src: url('/fonts/CoffeetinInitials-YXJ2.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'BlockFont';
+  src: url('/fonts/JqkasWild-w1YD6.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'CardFont';
+  src: url('/fonts/RoyalFlushRegular-Dev1.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Courier';
+  src: url('/fonts/MonospaceRegular-6ZWg.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+}
+
+
 @layer base {
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'CardFont', Arial, Helvetica, sans-serif !important;
   }
 }

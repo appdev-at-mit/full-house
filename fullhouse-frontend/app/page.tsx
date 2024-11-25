@@ -46,11 +46,11 @@ export default function LoginPage() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <div className="p-8 bg-white rounded-lg shadow-md text-center">
-        <h1 className="text-4xl font-bold mb-2">Full House</h1>
-        <div className="flex justify-center mb-4">
+      <div className="p-8 bg-white rounded-lg shadow-md text-center w-1/3">
+        <h1 className="text-7xl mb-10">Full House</h1>
+        {/* <div className="flex justify-center mb-4">
           <Image src="/logo.png" alt="Logo" width={150} height={150} />
-        </div>
+        </div> */}
         <p className="text-gray-600 mb-6 max-w-sm">
           Find your roommate for the summer / post-graduation
         </p>
@@ -73,7 +73,7 @@ export default function LoginPage() {
             Login
           </Button>
           <Button className="w-full" variant="outline" onClick={handleSignupRedirect}>
-            Sign up
+            New here? Create an account!
           </Button>
         </div>
       </div>
