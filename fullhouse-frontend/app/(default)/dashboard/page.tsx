@@ -74,11 +74,24 @@ export default function UserProfileMap() {
 
   const fetchUserData = async () => {
     try {
-      const response = await axios.get("sumting");
-      return response.data;
+      const token = localStorage.getItem("authToken"); // Example: Fetch user token from localStorage
+      const response = await axios.get("/api/user/preferences", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = response.data;
+
+      setUsername(data.name);
+      setUserClass(data.class);
+      setAboutText(data.about);
+      setLocationText(data.location);
+      setStatusText(data.preferences);
+      setGenderText(data.preferences);
+      setCleanText(data.preferences);
+      setTempText(data.preferences);
+      setGuestTest(data.preferences);
+      setSleepLightText(data.preferences);
     } catch (error) {
       console.error("Error fetching user data:", error);
-      return {};
     }
   };
 
@@ -104,8 +117,22 @@ export default function UserProfileMap() {
     setIsEditing((prev) => ({ ...prev, [section]: true }));
   };
 
-  const handleSaveClick = (section) => {
-    setIsEditing((prev) => ({ ...prev, [section]: false }));
+  const handleSaveClick = async () => {
+    try {
+      const token = localStorage.getItem("authToken");
+      await axios.put(
+        "/api/user/preferences",
+        {
+          about: aboutText,
+          location: locationText,
+          preferences,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Error saving user data:", error);
+    }
   };
 
   const handleSearchHousemateClick = () => {

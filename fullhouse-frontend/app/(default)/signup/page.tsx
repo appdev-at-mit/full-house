@@ -74,7 +74,7 @@ const SignupPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
       <div className="bg-white shadow-md rounded-lg p-8 max-w-md w-full">
-        <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">Sign Up</h1>
+        <h1 className="text-5xl mb-6 text-center text-gray-800">Sign Up</h1>
         {successMessage && <p className="text-green-600 bg-green-100 p-3 rounded mb-4">{successMessage}</p>}
         <form onSubmit={handleSubmit} className="space-y-6">
           {formFields.map((field) => (

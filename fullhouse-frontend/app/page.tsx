@@ -10,7 +10,6 @@ export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  // Handles login
   const handleLogin = async () => {
     try {
       const response = await fetch("http://127.0.0.1:8000/api/login_user/", {
@@ -18,27 +17,28 @@ export default function LoginPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ "username": username, "password": password }),
       });
-
+  
       if (response.ok) {
-        // Redirect to dashboard on successful login
+        const data = await response.json();
+        
+        // Save user and authKey to localStorage
+        localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.setItem("authKey", data.authKey); // Assuming the server returns 'authKey'
+  
+        // Redirect to dashboard
         router.push("/dashboard");
       } else {
-        // Handle error when account doesn't exist or incorrect credentials
         const errorData = await response.json();
-        if (errorData.message === "User not found" || errorData.message === "Incorrect password") {
-          alert("Invalid username or password");
-        } else {
-          alert(errorData.message || "Login failed");
-        }
+        alert(errorData.message || "Login failed");
       }
     } catch (error) {
       console.error("Error logging in:", error);
       alert("An error occurred during login.");
     }
   };
-
+  
   // Redirects to signup form
   const handleSignupRedirect = () => {
     router.push("/signup"); // Assumes you have a signup page at this route
@@ -47,11 +47,11 @@ export default function LoginPage() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <div className="p-8 bg-white rounded-lg shadow-md text-center w-1/3">
-        <h1 className="text-7xl mb-10">Full House</h1>
+        <h1 className="text-8xl mb-10">Full<br></br>House</h1>
         {/* <div className="flex justify-center mb-4">
           <Image src="/logo.png" alt="Logo" width={150} height={150} />
         </div> */}
-        <p className="text-gray-600 mb-6 max-w-sm">
+        <p className="text-gray-600 mb-6">
           Find your roommate for the summer / post-graduation
         </p>
         <div className="space-y-4">

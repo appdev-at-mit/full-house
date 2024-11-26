@@ -15,6 +15,7 @@ from .serializers import UserSerializer, MemberSerializer
 from django.views.decorators.csrf import csrf_exempt
 from .forms import MemberForm
 from django import forms
+from rest_framework.authtoken.models import Token
 
 
 @csrf_exempt
@@ -57,8 +58,8 @@ def member_signup(request):
             new_user = User(username=form.data['username'], 
                             first_name=form.data['first_name'],
                             last_name = form.data['last_name'],
-                            email = form.data['email'],
-                            password = form.data['password'])
+                            email = form.data['email'])
+            new_user.set_password(form.data['password'])
             new_member = form.save(commit=False)
             # new_member.user = request.user
             new_member.user = new_user
@@ -70,8 +71,47 @@ def member_signup(request):
 
 
 
+from django.contrib.auth.tokens import default_token_generator
+
+@csrf_exempt
 def login_user(request):
-    return render(request, "login.html", {})
+    if request.method == "POST":
+        try:
+            data = JSONParser().parse(request)
+            username = data.get("username")
+            password = data.get("password")
+
+            if not username or not password:
+                return JsonResponse({"message": "Username and password are required"}, status=400)
+
+            # Authenticate user
+            user = authenticate(request, username=username, password=password)
+            print(user)
+
+            if user is not None:
+                # Login user
+                login(request, user)
+
+                # Generate authentication token (or use a library like JWT)
+                auth_key = default_token_generator.make_token(user)
+
+                # Return user data and authKey
+                return JsonResponse({
+                    "user": {
+                        "id": user.id,
+                        "username": user.username,
+                        "email": user.email,
+                        "first_name": user.first_name,
+                        "last_name": user.last_name,
+                    },
+                    "authKey": auth_key,
+                }, status=200)
+
+            return JsonResponse({"message": "Invalid username or password"}, status=401)
+        except Exception as e:
+            return JsonResponse({"message": "An error occurred: " + str(e)}, status=500)
+
+    return JsonResponse({"error": "GET method not allowed for this endpoint"}, status=405)
 
 
 def get_member(func):
