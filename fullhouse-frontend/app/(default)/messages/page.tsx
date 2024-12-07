@@ -10,15 +10,15 @@ import { useRouter } from "next/navigation";
 const mockConversations = [
   {
     id: 1,
-    name: "Josie",
-    lastMessage: "poop",
+    name: "Alex Tang",
+    lastMessage: "See you!",
     time: "10:00 AM",
     pfp: "/pfp.png",
   },
   {
     id: 2,
-    name: "Eric",
-    lastMessage: "hi",
+    name: "Eric Zhan",
+    lastMessage: "I'll be staying in Boston over summer!",
     time: "9:30 AM",
     pfp: "/pfp.png",
   },
@@ -27,23 +27,96 @@ const mockConversations = [
 const mockMessages = [
   {
     id: 1,
-    sender: "Josie",
-    text: "Hey, how are you?",
-    time: "10:00 AM",
+    sender: "Alex",
+    text: "Hi! I saw your post about looking for a roommate this summer. Is the room still available?",
+    time: "9:15 AM",
   },
   {
     id: 2,
     sender: "You",
-    text: "I’m doing well, thanks! How about you?",
-    time: "10:01 AM",
+    text: "Hi Alex! Yes, the room is still available. Are you looking to move in for the entire summer?",
+    time: "9:17 AM",
   },
   {
     id: 3,
-    sender: "Josie",
-    text: "I'm great! Looking forward to the weekend.",
-    time: "10:02 AM",
+    sender: "Alex",
+    text: "Yes, I’d need it from June to August. Is that timeframe okay for you?",
+    time: "9:18 AM",
+  },
+  {
+    id: 4,
+    sender: "You",
+    text: "That works perfectly! The rent is $800/month, including utilities. Does that fit your budget?",
+    time: "9:20 AM",
+  },
+  {
+    id: 5,
+    sender: "Alex",
+    text: "Yeah, that’s within my budget. Could you tell me more about the apartment and the neighborhood?",
+    time: "9:22 AM",
+  },
+  {
+    id: 6,
+    sender: "You",
+    text: "Sure! It’s a two-bedroom place with a shared living room and kitchen. It’s a quiet area, close to a park, and there are a few grocery stores within walking distance.",
+    time: "9:25 AM",
+  },
+  {
+    id: 7,
+    sender: "Alex",
+    text: "That sounds great! How about cleanliness and noise? I prefer a pretty tidy and quiet space.",
+    time: "9:27 AM",
+  },
+  {
+    id: 8,
+    sender: "You",
+    text: "I’m the same way! I like to keep things clean and avoid loud parties. I think we’d be a good fit.",
+    time: "9:29 AM",
+  },
+  {
+    id: 9,
+    sender: "Alex",
+    text: "That’s awesome. I also have a small dog. Would that be okay with you?",
+    time: "9:30 AM",
+  },
+  {
+    id: 10,
+    sender: "You",
+    text: "I love dogs, so that’s totally fine! Does your dog get along well with people?",
+    time: "9:32 AM",
+  },
+  {
+    id: 11,
+    sender: "Alex",
+    text: "He’s very friendly, I promise! Would it be possible to visit the place sometime this week to check it out?",
+    time: "9:33 AM",
+  },
+  {
+    id: 12,
+    sender: "You",
+    text: "Of course! I’m available Thursday or Friday evening. What works better for you?",
+    time: "9:35 AM",
+  },
+  {
+    id: 13,
+    sender: "Alex",
+    text: "Friday evening works for me. Thank you so much! I’m excited to meet and see the place.",
+    time: "9:37 AM",
+  },
+  {
+    id: 14,
+    sender: "You",
+    text: "Great, I’ll see you Friday at 6 PM! Let me know if you have any other questions before then.",
+    time: "9:38 AM",
+  },
+  {
+    id: 15,
+    sender: "Alex",
+    text: "See you!",
+    time: "10:00 AM",
   },
 ];
+
 
 export default function MessagingPage() {
   const [conversations, setConversations] = useState(mockConversations);
@@ -133,7 +206,7 @@ export default function MessagingPage() {
               {messages.map((message) => (
                 <div key={message.id} className={`flex ${message.sender === "You" ? "justify-end" : "justify-start"}`}>
                   <div
-                    className={`p-3 rounded-2xl ${
+                    className={`p-3 rounded-2xl mb-4 ${
                       message.sender === "You" ? "bg-blue-500 text-white" : "bg-gray-200 text-black"
                     }`}
                   >

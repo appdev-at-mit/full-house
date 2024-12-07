@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { Search, Filter as FilterIcon } from "lucide-react";
+import { Search, Filter as FilterIcon, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
@@ -31,16 +31,16 @@ type UserProfile = {
 const mockUsers: UserProfile[] = [
   {
     id: 1,
-    profilePicture: "/pfp.png",
+    profilePicture: "/portrait1.jpg",
     username: "Josephine Wang",
     userClass: "2027",
-    aboutText: "Hi, I'm Josie. I'm cool.",
+    aboutText: "I'm an environmental science student who loves hiking and is passionate about starting a campus club focused on sustainability initiatives.",
     locationText: "Cambridge, MA",
     activityStatus: true,
     preferences: {
       status: "Looking for housing",
       gender: "Female",
-      year: "Freshman Undergraduate",
+      year: "Sophomore Undergraduate",
       sleepTime: "Between 11:00 PM and 1:00 AM",
       wakeTime: "Between 7:00 AM and 9:00 AM",
       cleanliness: "I prefer my living space to be neat and clean all of the time",
@@ -51,16 +51,16 @@ const mockUsers: UserProfile[] = [
   },
   {
     id: 2,
-    profilePicture: "/pfp.png",
+    profilePicture: "/pfp3.jpg",
     username: "Hailey Pan",
-    userClass: "2026",
-    aboutText: "I'm really cool. I'm even cooler than Josie.",
+    userClass: "2027",
+    aboutText: "As a graphic design major and former skateboarder, I create art inspired by my love for extreme sports and mentor younger students in skateboarding.",
     locationText: "Boston, MA",
     activityStatus: false,
     preferences: {
       status: "Have housing plans and looking for roommate(s)",
       gender: "Female",
-      year: "Junior Undergraduate",
+      year: "Sophomore Undergraduate",
       sleepTime: "After 1:00 AM",
       wakeTime: "After 11:00 AM",
       cleanliness: "I like my living space to be clean but I can tolerate some clutter",
@@ -71,16 +71,16 @@ const mockUsers: UserProfile[] = [
   },
   {
     id: 3,
-    profilePicture: "/pfp.png",
-    username: "Chris Liem",
-    userClass: "2025",
-    aboutText: "I like food.",
+    profilePicture: "/pfp2.jpg",
+    username: "Christopher Liem",
+    userClass: "2027",
+    aboutText: "I’m a culinary arts student with a passion for authentic Mexican cuisine, and I host cooking workshops to share my heritage with classmates.",
     locationText: "Boston, MA",
     activityStatus: true,
     preferences: {
       status: "Not looking for housing",
       gender: "Male",
-      year: "Senior Undergraduate",
+      year: "Sophomore Undergraduate",
       sleepTime: "Between 9:00 PM and 11:00 PM",
       wakeTime: "Before 7:00 AM",
       cleanliness: "Mess/clutter does not bother me",
@@ -91,16 +91,16 @@ const mockUsers: UserProfile[] = [
   },
   {
     id: 4,
-    profilePicture: "/pfp.png",
-    username: "Eric",
-    userClass: "2025",
-    aboutText: "I like food.",
+    profilePicture: "/pfp7.jpg",
+    username: "Eric Zhan",
+    userClass: "2028",
+    aboutText: "I’m a computer science student who develops educational video games as part of my coursework, aiming to make learning more engaging for kids.",
     locationText: "Boston, MA",
     activityStatus: true,
     preferences: {
       status: "Not looking for housing",
       gender: "Male",
-      year: "Senior Undergraduate",
+      year: "Freshman Undergraduate",
       sleepTime: "Between 9:00 PM and 11:00 PM",
       wakeTime: "Before 7:00 AM",
       cleanliness: "Mess/clutter does not bother me",
@@ -111,16 +111,16 @@ const mockUsers: UserProfile[] = [
   },
   {
     id: 5,
-    profilePicture: "/pfp.png",
-    username: "Rahsun",
-    userClass: "2025",
-    aboutText: "I like food.",
-    locationText: "Boston, MA",
+    profilePicture: "/pfp5.jpg",
+    username: "Rahsun Komatsuzaki-Fields",
+    userClass: "2028",
+    aboutText: "As a nursing student and yoga enthusiast, I strive to promote mental health awareness on campus through workshops and mindfulness sessions.",
+    locationText: "Cambridge, MA",
     activityStatus: true,
     preferences: {
       status: "Not looking for housing",
       gender: "Male",
-      year: "Senior Undergraduate",
+      year: "Freshman Undergraduate",
       sleepTime: "Between 9:00 PM and 11:00 PM",
       wakeTime: "Before 7:00 AM",
       cleanliness: "Mess/clutter does not bother me",
@@ -131,16 +131,16 @@ const mockUsers: UserProfile[] = [
   },
   {
     id: 6,
-    profilePicture: "/pfp.png",
+    profilePicture: "/pfp6.jpg",
     username: "Olivia Tang",
-    userClass: "2025",
-    aboutText: "I like food.",
-    locationText: "Boston, MA",
+    userClass: "2027",
+    aboutText: "I’m a photography major who loves traveling, capturing the beauty of different cultures, and sharing my experiences through my social media platform.",
+    locationText: "Cambridge, MA",
     activityStatus: true,
     preferences: {
       status: "Not looking for housing",
-      gender: "Male",
-      year: "Senior Undergraduate",
+      gender: "Female",
+      year: "Sophomore Undergraduate",
       sleepTime: "Between 9:00 PM and 11:00 PM",
       wakeTime: "Before 7:00 AM",
       cleanliness: "Mess/clutter does not bother me",
@@ -151,16 +151,16 @@ const mockUsers: UserProfile[] = [
   },
   {
     id: 7,
-    profilePicture: "/pfp.png",
+    profilePicture: "/pfp4.jpg",
     username: "Sophie Wang",
-    userClass: "2025",
-    aboutText: "I like food.",
+    userClass: "2027",
+    aboutText: "I’m a music student blending traditional Korean sounds with contemporary pop, using my performances to raise awareness about social issues on campus.",
     locationText: "Boston, MA",
     activityStatus: true,
     preferences: {
       status: "Not looking for housing",
-      gender: "Male",
-      year: "Senior Undergraduate",
+      gender: "Female",
+      year: "Sophomore Undergraduate",
       sleepTime: "Between 9:00 PM and 11:00 PM",
       wakeTime: "Before 7:00 AM",
       cleanliness: "Mess/clutter does not bother me",
@@ -224,15 +224,24 @@ export default function UserProfileMap() {
   return (
     <div className="flex h-screen bg-background">
       <div className="w-1/2 p-6 border-r border-border overflow-y-auto" style={{ maxHeight: "100vh" }}>
-        <div className="relative mb-2">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            type="search"
-            placeholder="Search for a housemate"
-            className="pl-8"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+      <div className="relative mb-2 flex items-center">
+            <div className="relative flex-grow">
+                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                type="search"
+                placeholder="Search for roommates"
+                className="pl-8"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                />
+            </div>
+        <Button
+            variant="outline"
+            className="ml-4"
+            onClick={() => router.push("/dashboard")}
+        >
+            <Home className="mr-2 h-4 w-4" /> Dashboard
+        </Button>
         </div>
         <div className="mb-6">
           <Button

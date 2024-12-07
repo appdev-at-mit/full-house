@@ -9,9 +9,15 @@ export default function SettingsPage() {
   const router = useRouter();
   const [bio, setBio] = useState("Hi, I'm Josephine!");
   const [location, setLocation] = useState("Cambridge, MA");
-  const [activityStatus, setActivityStatus] = useState(false);
+  const [activityStatus, setActivityStatus] = useState("Yes");
   const [privacy, setPrivacy] = useState("Public");
   const [profilePicture, setProfilePicture] = useState(null);
+  const [statusText, setStatusText] = useState("Yes");
+  const [genderText, setGenderText] = useState("No Preference");
+  const [cleanText, setCleanText] = useState("Moderate");
+  const [tempText, setTempText] = useState("Neutral");
+  const [guestText, setGuestText] = useState("Flexible");
+  const [sleepLightText, setSleepLightText] = useState("Dark");
 
   const handleLogout = () => {
     console.log("Logged out");
@@ -40,6 +46,10 @@ export default function SettingsPage() {
     }
   };
 
+  const handlePreferencesChange = (key, value) => {
+    setPreferences((prev) => ({ ...prev, [key]: value }));
+  };
+
   return (
     <div className="flex flex-col h-screen p-6 bg-background items-center mb-12">
       <div className="flex mb-4 w-full max-w-md text-left">
@@ -62,12 +72,12 @@ export default function SettingsPage() {
         <h2 className="text-2xl font-bold">Settings</h2>
       </div>
 
-      <div className="flex flex-col items-center w-full max-w-md mb-4">
+      <div className="flex flex-col items-center w-full max-w-md mb-2">
         <div className="mb-4">
           <label className="block text-sm font-semibold mb-1">Profile Picture</label>
           <div className="relative mb-2">
             <img
-              src={profilePicture || "/pfp.png"}
+              src={profilePicture || "/portrait1.jpg"}
               alt="Profile"
               className="w-24 h-24 rounded-full border-2 border-gray-300 object-cover"
             />
@@ -98,11 +108,12 @@ export default function SettingsPage() {
 
         <label className="block text-sm font-semibold mb-1">Actively looking for roommate</label>
         <select
-          value={privacy}
+          value={activityStatus}
+          onChange={(e) => setActivityStatus(e.target.value)}
           className="w-full mb-4 bg-white border border-gray-300 rounded-md p-2"
         >
-          <option value="True">Yes</option>
-          <option value="False">No</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
         </select>
 
         <label className="block text-sm font-semibold mb-1">Privacy</label>
@@ -121,7 +132,80 @@ export default function SettingsPage() {
           Private: Your profile and location are hidden
         </p>
 
-        <Button onClick={handleSaveChanges} className="mb-4 w-full">Save Changes</Button>
+        <label className="block text-sm font-semibold">Preferences</label>
+        <div className="w-full">
+          <label className="block text-sm font-medium mt-4">Looking for Housing</label>
+          <select
+            value={statusText}
+            onChange={(e) => setStatusText(e.target.value)}
+            className="w-full bg-white border border-gray-300 rounded-md p-2 mb-2"
+          >
+            <option value="0">Not looking for housing</option>
+            <option value="1">Looking for housing</option>
+            <option value="2">Have housing plans and looking for roommate(s)</option>
+          </select>
+
+          <label className="block text-sm font-medium">Gender Preference</label>
+          <select
+            value={genderText}
+            onChange={(e) => setGenderText(e.target.value)}
+            className="w-full bg-white border border-gray-300 rounded-md p-2 mb-2"
+          >
+            <option value="0">Male</option>
+            <option value="1">Female</option>
+            <option value="2">Transmale</option>
+            <option value="3">Transfemale</option>
+            <option value="4">Neutral/Other</option>
+            <option value="5">Prefer not to say</option>
+          </select>
+
+          <label className="block text-sm font-medium">Cleanliness Preference</label>
+          <select
+            value={cleanText}
+            onChange={(e) => setCleanText(e.target.value)}
+            className="w-full bg-white border border-gray-300 rounded-md p-2 mb-2"
+          >
+            <option value="0">I prefer my living space to be neat and clean all of the time</option>
+            <option value="1">I like my living space to be clean but I can tolerate some clutter</option>
+            <option value="2">Mess/clutter does not bother me</option>
+          </select>
+
+          <label className="block text-sm font-medium">Temperature Preference</label>
+          <select
+            value={tempText}
+            onChange={(e) => setTempText(e.target.value)}
+            className="w-full bg-white border border-gray-300 rounded-md p-2 mb-2"
+          >
+            <option value="0">I prefer a relatively warm temperature (above 72F/22C)</option>
+            <option value="1">I prefer a relatively cool temperature (below 68F/20C)</option>
+            <option value="2">No preference</option>
+          </select>
+
+          <label className="block text-sm font-medium">Guest Policy</label>
+          <select
+            value={guestText}
+            onChange={(e) => setGuestText(e.target.value)}
+            className="w-full bg-white border border-gray-300 rounded-md p-2 mb-2"
+          >
+            <option value="0">Guests should always be coordinated to make sure everyone is comfortable.</option>
+            <option value="1">Let's talk together about what rules we want to set about guests coming over.</option>
+            <option value="2">Spontaneity is great! Anything (within reason) is fine by me.</option>
+          </select>
+
+          <label className="block text-sm font-medium">Sleep Light Level</label>
+          <select
+            value={sleepLightText}
+            onChange={(e) => setSleepLightText(e.target.value)}
+            className="w-full bg-white border border-gray-300 rounded-md p-2 mb-4"
+          >
+            <option value="0">Lights on</option>
+            <option value="1">Some minimal light</option>
+            <option value="2">Completely dark</option>
+            <option value="3">No preference</option>
+          </select>
+        </div>
+
+        <Button onClick={handleSaveChanges} className="w-full mt-4">Save Changes</Button>
       </div>
 
       <div className="flex flex-col w-full max-w-md">

@@ -55,7 +55,7 @@ export default function UserProfileMap() {
   });
   const [username, setUsername] = useState("Josephine Wang");
   const [userClass, setUserClass] = useState("2027");
-  const [aboutText, setAboutText] = useState("Hi I'm josie hihihi");
+  const [aboutText, setAboutText] = useState("Hi! I am a sophomore majoring in course 6-3. I like traveling, sightseeing, and trying new cuisines.");
   const [locationText, setLocationText] = useState("Cambridge, MA");
   const [statusText, setStatusText] = useState("Not looking for housing");
   const [genderText, setGenderText] = useState("Female");
@@ -117,26 +117,20 @@ export default function UserProfileMap() {
     setIsEditing((prev) => ({ ...prev, [section]: true }));
   };
 
-  const handleSaveClick = async () => {
-    try {
-      const token = localStorage.getItem("authToken");
-      await axios.put(
-        "/api/user/preferences",
-        {
-          about: aboutText,
-          location: locationText,
-          preferences,
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setIsEditing(false);
-    } catch (error) {
-      console.error("Error saving user data:", error);
-    }
-  };
+  const handleSaveClick = (section) => {
+    // Disable editing mode for the specific section
+    setIsEditing((prev) => ({
+      ...prev,
+      [section]: false,
+    }));
+  };  
 
   const handleSearchHousemateClick = () => {
     router.push("/profile");
+  };
+
+  const handleSearchHousingClick = () => {
+    router.push("/listings");
   };
 
   if (!isMounted) {
@@ -146,12 +140,12 @@ export default function UserProfileMap() {
   return (
     <div className="flex h-screen bg-background">
       {/* User Profile */}
-      <div className="w-1/3 p-6 border-r border-border overflow-y-auto" style={{ maxHeight: "100vh" }}>
+      <div className="w-1/3 p-6 border-r border-border overflow-y-auto mb-6" style={{ maxHeight: "100vh" }}>
         <div className="flex flex-col h-full">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center">
               <Image
-                src="/pfp.png"
+                src="/portrait1.jpg"
                 alt="Profile Picture"
                 width={64}
                 height={64}
@@ -228,12 +222,12 @@ export default function UserProfileMap() {
             </div>
             {!isEditing.preferences ? (
               <div>
-                <p className='mt-2'><strong>Looking for Housing:</strong> {statusText}</p>
-                <p className='mt-2'><strong>Gender Preference:</strong> {genderText}</p>
-                <p className='mt-2'><strong>Cleanliness Preference:</strong> {cleanText}</p>
-                <p className='mt-2'><strong>Temperature Preference:</strong> {tempText}</p>
-                <p className='mt-2'><strong>Guest Policy:</strong> {guestText}</p>
-                <p className='mt-2'><strong>Sleep Light Level:</strong> {sleepLightText}</p>
+                <p className='mt-2 text-muted-foreground'><strong>Looking for Housing:</strong> {statusText}</p>
+                <p className='mt-2 text-muted-foreground'><strong>Gender Preference:</strong> {genderText}</p>
+                <p className='mt-2 text-muted-foreground'><strong>Cleanliness Preference:</strong> {cleanText}</p>
+                <p className='mt-2 text-muted-foreground'><strong>Temperature Preference:</strong> {tempText}</p>
+                <p className='mt-2 text-muted-foreground'><strong>Guest Policy:</strong> {guestText}</p>
+                <p className='mt-2 text-muted-foreground'><strong>Sleep Light Level:</strong> {sleepLightText}</p>
                 {/* Add other preferences similarly */}
               </div>            
             ) : (
@@ -305,8 +299,12 @@ export default function UserProfileMap() {
           </div>
 
           {/* Search for Housemate Button */}
-          <Button variant="outline" className="mb-6" onClick={handleSearchHousemateClick}>
+          <Button variant="outline" className="mb-4" onClick={handleSearchHousemateClick}>
             Search for a housemate
+          </Button>
+
+          <Button variant="outline" className="mb-4" onClick={handleSearchHousingClick}>
+            Search for housing
           </Button>
 
           <Button variant="outline" className="mb-auto" onClick={handleSettingsClick}>
