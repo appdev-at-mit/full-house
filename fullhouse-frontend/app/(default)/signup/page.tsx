@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 interface FormField {
   name: string;
@@ -9,7 +10,9 @@ interface FormField {
   type: string;
 }
 
+
 const SignupPage: React.FC = () => {
+  const router = useRouter();
   const [formFields, setFormFields] = useState<FormField[]>([]);
   const [formData, setFormData] = useState<{ [key: string]: string | boolean }>({});
   const [errorMessages, setErrorMessages] = useState<{ [key: string]: string[] }>({});
@@ -61,6 +64,7 @@ const SignupPage: React.FC = () => {
             return acc;
           }, {} as { [key: string]: string | boolean })
         );
+		redirectToLoginPage();
       })
       .catch((error) => {
         if (error.response && error.response.data) {
@@ -70,6 +74,11 @@ const SignupPage: React.FC = () => {
         }
       });
   };
+
+  const redirectToLoginPage = ()  => {
+	  router.push("/")
+  }
+
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
