@@ -47,7 +47,7 @@ const mapPins = [
 ];
 
 export default function UserProfileMap() {
-  const [activityStatus, setActivityStatus] = useState(false);
+  const [activityStatus, setActivityStatus] = useState(true);
   const [isEditing, setIsEditing] = useState({
     about: false,
     location: false,

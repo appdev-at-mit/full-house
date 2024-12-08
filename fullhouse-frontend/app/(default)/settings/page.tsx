@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 
 export default function SettingsPage() {
   const router = useRouter();
-  const [bio, setBio] = useState("Hi, I'm Josephine!");
+  const [bio, setBio] = useState("Hi! I am a sophomore majoring in course 6-3. I like traveling, sightseeing, and trying new cuisines.");
   const [location, setLocation] = useState("Cambridge, MA");
   const [activityStatus, setActivityStatus] = useState("Yes");
   const [privacy, setPrivacy] = useState("Public");
@@ -51,7 +51,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="flex flex-col h-screen p-6 bg-background items-center mb-12">
+    <div className="flex flex-col h-screen p-6 bg-background items-center">
       <div className="flex mb-4 w-full max-w-md text-left">
         <button onClick={handleBack} className="mr-2">
           <svg
