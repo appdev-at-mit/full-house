@@ -6,20 +6,21 @@ Additionally, users can create accomodation listins on Full House. For instance,
 ## Getting started
 If you do not have git, install here: https://git-scm.com/downloads
 
-Create a folder where you would like to store the Full House source code. Run the following commands in git bash:
-```cd {foldername}```
-```git init```
-```git remote add origin https://github.com/full-stack-at-mit/full-house.git```
-```git pull origin main```
-The folder should now contain the source code. Run the following commands to run the frontend:
-```cd fullhouse-frontend```
-```npm install```
-```npm run dev```
-The frontend should be hosted on localhost port 3000.
+Create a folder where you would like to store the Full House source code. Run the following commands in git bash: \\
+```cd {foldername}``` \\
+```git init``` \\
+```git remote add origin https://github.com/full-stack-at-mit/full-house.git``` \\
+```git pull origin main``` \\
 
-Run the following commands to run the backend:
-```cd ..```
-```cd fullhouse-backend```
-```pip install -r requirements.txt```
-```py manage.py runserver```
-The backend should be running.
+The folder should now contain the source code. Run the following commands to run the frontend: \\
+```cd fullhouse-frontend``` \\
+```npm install``` \\
+```npm run dev``` \\
+The frontend should be hosted on localhost port 3000. \\
+
+Run the following commands to run the backend: \\
+```cd ..``` \\
+```cd fullhouse-backend``` \\
+```pip install -r requirements.txt``` \\
+```py manage.py runserver``` \\
+The backend should be running. \\
