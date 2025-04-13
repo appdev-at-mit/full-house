@@ -173,13 +173,13 @@ class MemberProfileView(APIView):
         return JsonResponse({"users": json.loads(serialized)}, safe=False)
 
 
-@csrf_exempt
-def test_tiny(request):
-    if request.method == "POST":
-        tiny_data = JSONParser().parse(request)
-        serializer = TinySerializer(data=tiny_data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
-    return JsonResponse({"error": "GET method not allowed for this endpoint"}, status=405)
+# @csrf_exempt
+# def test_tiny(request):
+#     if request.method == "POST":
+#         tiny_data = JSONParser().parse(request)
+#         serializer = TinySerializer(data=tiny_data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return JsonResponse(serializer.data, status=201)
+#         return JsonResponse(serializer.errors, status=400)
+#     return JsonResponse({"error": "GET method not allowed for this endpoint"}, status=405)
