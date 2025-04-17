@@ -14,6 +14,14 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 
+interface User {
+  id: number;
+  username: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+}
+
 // Fix for missing default icons in Leaflet
 const customIcon = new L.Icon({
   iconUrl: "/map-marker.png",
@@ -68,38 +76,45 @@ export default function UserProfileMap() {
   const router = useRouter();
 
   useEffect(() => {
-    // initData();
-    setIsMounted(true);
+    const checkAuth = async () => {
+      await fetchUserData();
+    };
+    checkAuth();
   }, []);
 
   const fetchUserData = async () => {
     try {
-      const token = localStorage.getItem("authToken"); // Example: Fetch user token from localStorage
-      const response = await axios.get("/api/user/preferences", {
-        headers: { Authorization: `Bearer ${token}` },
+      const token = localStorage.getItem("authToken");
+      const userString = localStorage.getItem("user");
+      const user: User | null = userString ? JSON.parse(userString) as User : null;
+      const username = user?.username ?? 'default_username'; 
+      console.log("USER", username);
+      
+      const response = await axios.get(`/api/get_member/?username=${username}`, {
+        headers: { 
+          Authorization: `Token ${token}`,
+          'Content-Type': 'application/json'
+        }
       });
-      const data = response.data;
-
-      setUsername(data.name);
-      setUserClass(data.class);
-      setAboutText(data.about);
-      setLocationText(data.location);
-      setStatusText(data.preferences);
-      setGenderText(data.preferences);
-      setCleanText(data.preferences);
-      setTempText(data.preferences);
-      setGuestTest(data.preferences);
-      setSleepLightText(data.preferences);
+      
+      const memberData = response.data;
+      
+      // Map backend fields to frontend state
+      setUsername(memberData.user.username);
+      setUserClass(memberData.year);
+      setAboutText(memberData.bio);
+      setLocationText(`${memberData.city_name}, ${memberData.state_name}`);
+      setStatusText(memberData.rooming_status);
+      setGenderText(memberData.gender);
+      setCleanText(memberData.pref_cleanliness);
+      setTempText(memberData.pref_temperature);
+      setGuestTest(memberData.pref_day_guests);
+      setSleepLightText(memberData.pref_sleep_light);
+  
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
-  };
-
-  const initData = async () => {
-    const data = await fetchUserData();
-    setUsername(data.name);
-    setUserClass(data.class);
-  };
+  };  
 
   const handleMailClick = () => {
     if (isMounted) {
@@ -117,13 +132,49 @@ export default function UserProfileMap() {
     setIsEditing((prev) => ({ ...prev, [section]: true }));
   };
 
-  const handleSaveClick = (section) => {
-    // Disable editing mode for the specific section
-    setIsEditing((prev) => ({
-      ...prev,
-      [section]: false,
-    }));
-  };  
+  const handleSaveClick = async (section) => {
+    try {
+      const token = localStorage.getItem('token');
+      const username = localStorage.getItem('username');
+      
+      const fieldMapping = {
+        about: 'bio',
+        location: ['city_name', 'state_name'],
+        preferences: {
+          statusText: 'rooming_status',
+          genderText: 'gender',
+          cleanText: 'pref_cleanliness',
+          tempText: 'pref_temperature',
+          guestText: 'pref_day_guests',
+          sleepLightText: 'pref_sleep_light'
+        }
+      };
+  
+      const updateData = {};
+      if (section === 'location') {
+        const [city, state] = locationText.split(', ');
+        updateData.city_name = city;
+        updateData.state_name = state;
+      } else if (section === 'preferences') {
+        Object.entries(fieldMapping.preferences).forEach(([frontendField, backendField]) => {
+          updateData[backendField] = eval(frontendField);
+        });
+      } else {
+        updateData[fieldMapping[section]] = eval(section + 'Text');
+      }
+  
+      await axios.put(`/api/member/?username=${username}`, updateData, {
+        headers: {
+          Authorization: `Token ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      setIsEditing(prev => ({ ...prev, [section]: false }));
+    } catch (error) {
+      console.error('Error saving data:', error);
+    }
+  };
 
   const handleSearchHousemateClick = () => {
     router.push("/profile");
