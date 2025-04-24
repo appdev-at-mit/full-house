@@ -10,12 +10,15 @@ interface FormField {
   type: string;
 }
 
-
 const SignupPage: React.FC = () => {
   const router = useRouter();
   const [formFields, setFormFields] = useState<FormField[]>([]);
-  const [formData, setFormData] = useState<{ [key: string]: string | boolean }>({});
-  const [errorMessages, setErrorMessages] = useState<{ [key: string]: string[] }>({});
+  const [formData, setFormData] = useState<{ [key: string]: string | boolean }>(
+    {}
+  );
+  const [errorMessages, setErrorMessages] = useState<{
+    [key: string]: string[];
+  }>({});
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -34,7 +37,11 @@ const SignupPage: React.FC = () => {
       });
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
@@ -64,7 +71,7 @@ const SignupPage: React.FC = () => {
             return acc;
           }, {} as { [key: string]: string | boolean })
         );
-		redirectToLoginPage();
+        redirectToLoginPage();
       })
       .catch((error) => {
         if (error.response && error.response.data) {
@@ -75,16 +82,19 @@ const SignupPage: React.FC = () => {
       });
   };
 
-  const redirectToLoginPage = ()  => {
-	  router.push("/")
-  }
-
+  const redirectToLoginPage = () => {
+    router.push("/");
+  };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
-      <div className="bg-white shadow-md rounded-lg p-8 max-w-md w-full">
-        <h1 className="text-5xl mb-6 text-center text-gray-800">Sign Up</h1>
-        {successMessage && <p className="text-green-600 bg-green-100 p-3 rounded mb-4">{successMessage}</p>}
+    <div className="min-h-screen bg-red-200 flex items-center justify-center px-4">
+      <div className="bg-white shadow-md rounded-lg p-8 m-10 max-w-2xl w-full">
+        <h1 className="text-9xl mb-6 text-center text-gray-800">Sign Up</h1>
+        {successMessage && (
+          <p className="text-green-600 bg-green-100 p-3 rounded mb-4">
+            {successMessage}
+          </p>
+        )}
         <form onSubmit={handleSubmit} className="space-y-6">
           {formFields.map((field) => (
             <div key={field.name} className="flex flex-col space-y-1">
@@ -124,25 +134,31 @@ const SignupPage: React.FC = () => {
                   className="p-2 border rounded-md focus:ring focus:ring-blue-300"
                 >
                   <option value="">Select an option</option>
-                  {field.options?.map((option: { value: number; label: string }) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
+                  {field.options?.map(
+                    (option: { value: number; label: string }) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    )
+                  )}
                 </select>
               )}
-              {field.type !== "textarea" && field.type !== "checkbox" && field.type !== "select" && (
-                <input
-                  id={field.name}
-                  name={field.name}
-                  type={field.type}
-                  value={formData[field.name] as string}
-                  onChange={handleChange}
-                  className="p-2 border rounded-md focus:ring focus:ring-blue-300"
-                />
-              )}
+              {field.type !== "textarea" &&
+                field.type !== "checkbox" &&
+                field.type !== "select" && (
+                  <input
+                    id={field.name}
+                    name={field.name}
+                    type={field.type}
+                    value={formData[field.name] as string}
+                    onChange={handleChange}
+                    className="p-2 border rounded-md focus:ring focus:ring-blue-300"
+                  />
+                )}
               {errorMessages[field.name] && (
-                <p className="text-red-600 text-sm">{errorMessages[field.name].join(", ")}</p>
+                <p className="text-red-600 text-sm">
+                  {errorMessages[field.name].join(", ")}
+                </p>
               )}
             </div>
           ))}
