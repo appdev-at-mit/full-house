@@ -5,6 +5,7 @@ import { Search, Filter as FilterIcon, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
+import axiosInstance from "../settings/[username]/axiosInstance";
 
 type Accommodation = {
   id: number;
@@ -60,6 +61,7 @@ const mockAccommodations: Accommodation[] = [
 
 export default function AccommodationListings() {
   const [selectedListing, setSelectedListing] = useState<Accommodation | null>(null);
+  const [accommodations, setAcommodations] = useState<Accommodation[] | null>(mockAccommodations);
   const [isMounted, setIsMounted] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -72,8 +74,23 @@ export default function AccommodationListings() {
   const router = useRouter();
 
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
+      async function fetchData() {
+        axiosInstance
+          .get("http://127.0.0.1:8000/api/listings/")
+          .then(response => {
+            console.log("response", response.data);
+            setAcommodations(response.data);
+            setIsMounted(true);
+            // Handle success (e.g., redirect or show success message)
+          })
+          .catch(error => {
+            console.error('Error getting listings:', error);
+            // Handle error (e.g., member not found)
+          });
+      }
+      
+      fetchData();
+    }, []);
 
   if (!isMounted) {
     return null;
@@ -87,7 +104,7 @@ export default function AccommodationListings() {
     setIsFilterOpen(!isFilterOpen);
   };
 
-  const filteredListings = mockAccommodations.filter((listing) => {
+  const filteredListings = accommodations?.filter((listing) => {
     const matchesSearch = searchTerm
       ? listing.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
         listing.poster.toLowerCase().includes(searchTerm.toLowerCase())
@@ -136,7 +153,7 @@ export default function AccommodationListings() {
           </Button>
         </div>
         <div className="space-y-4">
-          {filteredListings.map((listing) => (
+          {filteredListings?.map((listing) => (
             <div
               key={listing.id}
               onClick={() => handleListingSelect(listing)}

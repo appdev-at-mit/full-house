@@ -115,6 +115,7 @@ def login_user(request):
 
 
 def get_member(func):
+    print("came to get")
     def api_func(self, request, *args, **kwargs):
         username = request.query_params.get("username")
         if not username:
@@ -155,6 +156,7 @@ class MemberProfileView(APIView):
 
     @get_member
     def put(self, request, member):
+        print("came to put?")
         user_data = JSONParser().parse(request)
         serializer = MemberSerializer(member, data=user_data)
         if serializer.is_valid():

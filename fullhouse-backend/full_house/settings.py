@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     # apps
     "accounts",
     # "listings",
-
+    'listings',
     # third party things
     "crispy_forms",
     "crispy_bootstrap4",
@@ -143,7 +143,10 @@ CORS_ALLOW_ALL_ORIGINS = True
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
 }
 
 CORS_ALLOW_METHODS = [

@@ -1,21 +1,26 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import axiosInstance from './axiosInstance';
+import axios from "axios";
 
 export default function SettingsPage() {
   const router = useRouter();
+  const { username } = useParams();
   const [bio, setBio] = useState("Hi! I am a sophomore majoring in course 6-3. I like traveling, sightseeing, and trying new cuisines.");
   const [location, setLocation] = useState("Cambridge, MA");
   const [activityStatus, setActivityStatus] = useState("Yes");
   const [privacy, setPrivacy] = useState("Public");
   const [profilePicture, setProfilePicture] = useState(null);
   const [statusText, setStatusText] = useState("Yes");
+  // default different from available options?
   const [genderText, setGenderText] = useState("No Preference");
   const [cleanText, setCleanText] = useState("Moderate");
   const [tempText, setTempText] = useState("Neutral");
+  // options on backend are "pref_day_guests","pref_night_guests",
   const [guestText, setGuestText] = useState("Flexible");
   const [sleepLightText, setSleepLightText] = useState("Dark");
 
@@ -24,11 +29,48 @@ export default function SettingsPage() {
   };
 
   const handleDeleteAccount = () => {
-    console.log("Account deleted");
+    
+    axiosInstance
+      .delete(`api/member_profile/?username=${username}`)
+      .then(response => {
+        console.log('Member profile deleted:', response.data);
+        // Handle success (e.g., redirect or show success message)
+      })
+      .catch(error => {
+        console.error('Error deleting member profile:', error);
+        // Handle error (e.g., member not found)
+      });
   };
 
   const handleSaveChanges = () => {
-    console.log("Changes saved");
+    // TODO: what is the data? - can we have same names for consistency?
+    // privacy not available
+    // profile pic not set up in the backend?
+    const token = localStorage.getItem("authKey"); 
+    console.log("token: ", token)
+    const updatedProfileData = {
+      bio, 
+      rooming_status: statusText, 
+      gender: genderText, 
+      pref_cleanliness: cleanText,
+      pref_temperature: tempText,
+      pref_sleep_light: sleepLightText
+    }
+    axiosInstance
+    .put(`http://127.0.0.1:8000/api/member_profile/`, updatedProfileData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    })
+    .then(response => {
+      const updatedMember = response.data;
+      console.log('Member profile updated:', updatedMember);
+      // Handle success (e.g., display updated data)
+    })
+    .catch(error => {
+      console.error('Error updating member profile:', error);
+      // Handle error (e.g., validation errors)
+    });
   };
 
   const handleBack = () => {
@@ -46,6 +88,7 @@ export default function SettingsPage() {
     }
   };
 
+  // TODO: changed?
   const handlePreferencesChange = (key, value) => {
     setPreferences((prev) => ({ ...prev, [key]: value }));
   };

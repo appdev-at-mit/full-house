@@ -12,4 +12,5 @@ urlpatterns = [
     path("api/member_signup/", member_signup, name="member_signup"),
     # path("api/test_tiny/", test_tiny, name="test_tiny"),
     path("api/member_profile/", MemberProfileView.as_view(), name="member_profile"),
+    path('api/', include('listings.urls')),
 ]

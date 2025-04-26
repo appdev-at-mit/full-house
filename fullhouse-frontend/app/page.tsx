@@ -11,33 +11,33 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
-    // try {
-    //   const response = await fetch("http://127.0.0.1:8000/api/login_user/", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify({ "username": username, "password": password }),
-    //   });
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/login_user/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ "username": username, "password": password }),
+      });
   
-    //   if (response.ok) {
-    //     const data = await response.json();
+      if (response.ok) {
+        const data = await response.json();
         
-    //     // Save user and authKey to localStorage
-    //     localStorage.setItem("user", JSON.stringify(data.user));
-    //     localStorage.setItem("authKey", data.authKey); // Assuming the server returns 'authKey'
+        // Save user and authKey to localStorage
+        localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.setItem("authKey", data.authKey);
   
-    //     // Redirect to dashboard
-    //     router.push("/dashboard");
-    //   } else {
-    //     const errorData = await response.json();
-    //     alert(errorData.message || "Login failed");
-    //   }
-    // } catch (error) {
-    //   console.error("Error logging in:", error);
-    //   alert("An error occurred during login.");
-    // }
-    router.push("/dashboard");
+        // Redirect to dashboard
+        router.push("/dashboard");
+      } else {
+        const errorData = await response.json();
+        alert(errorData.message || "Login failed");
+      }
+    } catch (error) {
+      console.error("Error logging in:", error);
+      alert("An error occurred during login.");
+    }
+    // router.push("/dashboard");
   };
   
   // Redirects to signup form

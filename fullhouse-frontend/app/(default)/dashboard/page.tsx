@@ -74,7 +74,7 @@ export default function UserProfileMap() {
 
   const fetchUserData = async () => {
     try {
-      const token = localStorage.getItem("authToken"); // Example: Fetch user token from localStorage
+      const token = localStorage.getItem("authKey"); // Example: Fetch user token from localStorage
       const response = await axios.get("/api/user/preferences", {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -109,7 +109,7 @@ export default function UserProfileMap() {
 
   const handleSettingsClick = () => {
     if (isMounted) {
-      router.push("/settings");
+      router.push(`/settings/${username}`);
     }
   };
 
