@@ -9,11 +9,11 @@ import axiosInstance from "../settings/[username]/axiosInstance";
 
 type Accommodation = {
   id: number;
-  poster: string;
+  posterUsername: string;
   profilePicture: string;
-  bedrooms: number;
-  bathrooms: number;
-  petsAllowed: boolean;
+  num_bedrooms: number;
+  num_bathrooms: number;
+  pets_allowed: boolean;
   address: string;
   roommates: number;
   availableFrom: string;
@@ -23,11 +23,11 @@ type Accommodation = {
 const mockAccommodations: Accommodation[] = [
   {
     id: 1,
-    poster: "Josephine Wang",
+    posterUsername: "Josephine Wang",
     profilePicture: "/house1.jpg",
-    bedrooms: 3,
-    bathrooms: 2,
-    petsAllowed: true,
+    num_bedrooms: 3,
+    num_bathrooms: 2,
+    pets_allowed: true,
     address: "123 Main St, Cambridge, MA",
     roommates: 2,
     availableFrom: "June 1, 2024",
@@ -35,11 +35,11 @@ const mockAccommodations: Accommodation[] = [
   },
   {
     id: 2,
-    poster: "Chris Liem",
+    posterUsername: "Chris Liem",
     profilePicture: "/house2.jpg",
-    bedrooms: 2,
-    bathrooms: 1,
-    petsAllowed: false,
+    num_bedrooms: 2,
+    num_bathrooms: 1,
+    pets_allowed: false,
     address: "456 Park Ave, Boston, MA",
     roommates: 1,
     availableFrom: "July 15, 2024",
@@ -47,11 +47,11 @@ const mockAccommodations: Accommodation[] = [
   },
   {
     id: 3,
-    poster: "Hailey Pan",
+    posterUsername: "Hailey Pan",
     profilePicture: "/house3.jpg",
-    bedrooms: 4,
-    bathrooms: 3,
-    petsAllowed: true,
+    num_bedrooms: 4,
+    num_bathrooms: 3,
+    pets_allowed: true,
     address: "789 Elm St, Somerville, MA",
     roommates: 3,
     availableFrom: "May 1, 2024",
@@ -66,9 +66,9 @@ export default function AccommodationListings() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filters, setFilters] = useState({
-    petsAllowed: "",
-    bedrooms: "",
-    bathrooms: "",
+    pets_allowed: "",
+    num_bedrooms: "",
+    num_bathrooms: "",
     location: "",
   });
   const router = useRouter();
@@ -107,13 +107,13 @@ export default function AccommodationListings() {
   const filteredListings = accommodations?.filter((listing) => {
     const matchesSearch = searchTerm
       ? listing.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        listing.poster.toLowerCase().includes(searchTerm.toLowerCase())
+        listing.posterUsername.toLowerCase().includes(searchTerm.toLowerCase())
       : true;
 
     const matchesFilters =
-      (!filters.petsAllowed || String(listing.petsAllowed) === filters.petsAllowed) &&
-      (!filters.bedrooms || listing.bedrooms.toString() === filters.bedrooms) &&
-      (!filters.bathrooms || listing.bathrooms.toString() === filters.bathrooms) &&
+      (!filters.pets_allowed || String(listing.pets_allowed) === filters.pets_allowed) &&
+      (!filters.num_bedrooms || listing.num_bedrooms.toString() === filters.num_bedrooms) &&
+      (!filters.num_bathrooms || listing.num_bathrooms.toString() === filters.num_bathrooms) &&
       (!filters.location || listing.address.toLowerCase().includes(filters.location.toLowerCase()));
 
     return matchesSearch && matchesFilters;
@@ -168,7 +168,7 @@ export default function AccommodationListings() {
               />
               <div>
                 <h3 className="text-lg font-bold">{listing.address}</h3>
-                <p className="text-sm text-muted-foreground">Posted by {listing.poster}</p>
+                <p className="text-sm text-muted-foreground">Posted by {listing.posterUsername}</p>
               </div>
             </div>
           ))}
@@ -185,18 +185,18 @@ export default function AccommodationListings() {
               className="mb-4"
             />
             <h2 className="text-xl font-bold">{selectedListing.address}</h2>
-            <p className="text-muted-foreground mb-6">Posted by {selectedListing.poster}</p>
+            <p className="text-muted-foreground mb-6">Posted by {selectedListing.posterUsername}</p>
             <div className="w-full mb-6">
               <h3 className="text-lg font-semibold">Details</h3>
               <ul className="list-disc list-inside text-gray-700">
                 <li>
-                  <strong>Bedrooms:</strong> {selectedListing.bedrooms}
+                  <strong>Bedrooms:</strong> {selectedListing.num_bedrooms}
                 </li>
                 <li>
-                  <strong>Bathrooms:</strong> {selectedListing.bathrooms}
+                  <strong>Bathrooms:</strong> {selectedListing.num_bathrooms}
                 </li>
                 <li>
-                  <strong>Pets Allowed:</strong> {selectedListing.petsAllowed ? "Yes" : "No"}
+                  <strong>Pets Allowed:</strong> {selectedListing.pets_allowed ? "Yes" : "No"}
                 </li>
                 <li>
                   <strong>Roommates:</strong> {selectedListing.roommates}
@@ -232,8 +232,8 @@ export default function AccommodationListings() {
               <div>
                 <label className="block text-sm font-medium">Pets Allowed</label>
                 <select
-                  value={filters.petsAllowed}
-                  onChange={(e) => setFilters({ ...filters, petsAllowed: e.target.value })}
+                  value={filters.pets_allowed}
+                  onChange={(e) => setFilters({ ...filters, pets_allowed: e.target.value })}
                   className="w-full border border-gray-300 rounded px-3 py-2"
                 >
                   <option value="">Any</option>
@@ -246,8 +246,8 @@ export default function AccommodationListings() {
                 <Input
                   type="number"
                   placeholder="Number of bedrooms"
-                  value={filters.bedrooms}
-                  onChange={(e) => setFilters({ ...filters, bedrooms: e.target.value })}
+                  value={filters.num_bedrooms}
+                  onChange={(e) => setFilters({ ...filters, num_bedrooms: e.target.value })}
                 />
               </div>
               <div>
@@ -255,8 +255,8 @@ export default function AccommodationListings() {
                 <Input
                   type="number"
                   placeholder="Number of bathrooms"
-                  value={filters.bathrooms}
-                  onChange={(e) => setFilters({ ...filters, bathrooms: e.target.value })}
+                  value={filters.num_bathrooms}
+                  onChange={(e) => setFilters({ ...filters, num_bathrooms: e.target.value })}
                 />
               </div>
             </div>
@@ -267,7 +267,7 @@ export default function AccommodationListings() {
               <Button
                 variant="outline"
                 onClick={() => {
-                  setFilters({ petsAllowed: "", bedrooms: "", bathrooms: "", location: "" });
+                  setFilters({ pets_allowed: "", num_bedrooms: "", num_bathrooms: "", location: "" });
                   setIsFilterOpen(false);
                 }}
               >

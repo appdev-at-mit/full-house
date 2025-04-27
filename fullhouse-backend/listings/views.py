@@ -7,7 +7,11 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 class ProspectiveListingViewSet(viewsets.ModelViewSet):
     queryset = ProspectiveListing.objects.all()
     serializer_class = ProspectiveListingSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    # permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = []
+
+    # def perform_create(self, serializer):
+    #     serializer.save(poster=self.request.user.member)
 
 
     # listings/views.py

@@ -69,6 +69,7 @@ export default function UserProfileMap() {
 
   useEffect(() => {
     // initData();
+    console.log("token: ", localStorage.getItem("authKey"))
     setIsMounted(true);
   }, []);
 

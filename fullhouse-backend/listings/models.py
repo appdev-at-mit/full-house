@@ -31,6 +31,7 @@ class ProspectiveStay(models.Model):
     pets_allowed = models.BooleanField(default=False)
     num_roommates_needed = models.PositiveIntegerField()
     rent = models.DecimalField(max_digits=10, decimal_places=2)
+    aboutText = models.CharField(max_length=1000)
 
 class ProspectiveListing(models.Model):
     """
@@ -54,3 +55,5 @@ class ProspectiveListing(models.Model):
     pets_allowed = models.BooleanField(default=False)
     num_roommates_needed = models.PositiveIntegerField()
     rent = models.DecimalField(max_digits=10, decimal_places=2)
+    aboutText = models.CharField(max_length=1000)
+
