@@ -51,6 +51,7 @@ def member_signup(request):
                 "label": field.label,
                 "type": input_type,
                 "options": options,
+                "required": field.field.required,
             })
 
         return JsonResponse({"form_fields": form_fields}, status=200)
@@ -179,7 +180,7 @@ class MemberProfileView(APIView):
     @get_member
     def put(self, request, member):
         user_data = JSONParser().parse(request)
-        serializer = MemberSerializer(member, data=user_data)
+        serializer = MemberSerializer(member, data=user_data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data, status=200)

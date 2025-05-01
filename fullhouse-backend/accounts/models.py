@@ -85,38 +85,37 @@ class Member(models.Model):
 
     # actual attributes
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    username = models.CharField(max_length=150, unique=True)
-    password = models.CharField(max_length=128)
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30)
-    email = models.EmailField()
+    username = models.CharField(max_length=150, unique=True, blank=False, null=False)
+    password = models.CharField(max_length=128, blank=False, null=False)
+    first_name = models.CharField(max_length=30, blank=False, null=False)
+    last_name = models.CharField(max_length=30, blank=False, null=False)
+    email = models.EmailField(blank=False, null=False)
 
-    verified = models.BooleanField(default= False)
+    verified = models.BooleanField(default=False)
     account_creation_date = models.DateField(editable=False)
     rooming_status = models.CharField(choices=Status.choices, max_length=200)
-    private_location = models.BooleanField(default=True) # DO NOT SHOW USERS with private location true
+    private_location = models.BooleanField(default=True)
     city_name = models.CharField(max_length=255)
-    state_name = models.CharField(max_length=2,
-                                  error_messages={
-                                      'max_length': 'State names must be two letter abbreviations.'
-                                      })
+    state_name = models.CharField(max_length=2, error_messages={
+        'max_length': 'State names must be two letter abbreviations.'
+    })
 
 
-    # profile_pic = models.ImageField() # TODO: make default image and upload directory
+    profile_pic = models.TextField() # TODO: make default image and upload directory
     bio = models.CharField(max_length=MAX_LENGTHS["bio"])
-    school = models.TextField() # initialized upon verification
-    date_of_birth = models.DateField() # initialized upon verification
-    year = models.IntegerField(choices=Year.choices)
-    phone_num = PhoneNumberField(blank=False, max_length=300)
+    school = models.TextField(blank=False, null=False)
+    date_of_birth = models.DateField(blank=False, null=False)
+    year = models.IntegerField(choices=Year.choices, blank=False, null=False)
+    phone_num = PhoneNumberField(blank=False, null=False, max_length=300)
+    gender = models.IntegerField(choices=Gender.choices, blank=False, null=False)
 
-    gender = models.IntegerField(choices = Gender.choices)
     dietary_restrictions = models.CharField(max_length=MAX_LENGTHS["dietary_restrictions"], blank=True)
-    sleep_time_weekday = models.IntegerField(choices = SleepTime.choices)
-    sleep_time_weekend = models.IntegerField(choices = SleepTime.choices)
-    wake_time_weekday = models.IntegerField(choices = WakeTime.choices)
-    wake_time_weekend = models.IntegerField(choices = WakeTime.choices)
-    animals = models.CharField(max_length=MAX_LENGTHS["animals"], blank=True)
-    additional_notes = models.CharField(max_length = MAX_LENGTHS["additional_notes"], blank=True)
+    sleep_time_weekday = models.IntegerField(choices=SleepTime.choices)
+    sleep_time_weekend = models.IntegerField(choices=SleepTime.choices)
+    wake_time_weekday = models.IntegerField(choices=WakeTime.choices)
+    wake_time_weekend = models.IntegerField(choices=WakeTime.choices)
+    animals = models.BooleanField(default=False)  # changed from CharField
+    additional_notes = models.CharField(max_length=MAX_LENGTHS["additional_notes"], blank=True)
 
     # PREFERENCES they would like out of the other roommate
     # Some of these have defaults, "don't care" is a specific option they must opt into
@@ -124,8 +123,8 @@ class Member(models.Model):
     pref_smoking =  models.BooleanField(default=False) 
     pref_cleanliness = models.IntegerField(choices = Cleanliness.choices)
     pref_temperature = models.IntegerField(choices= Temperature.choices)
-    pref_age_min = models.IntegerField(blank=True)
-    pref_age_max = models.IntegerField(blank=True)
+    pref_age_min = models.IntegerField(blank=True, null=False)
+    pref_age_max = models.IntegerField(blank=True, null=False)
     pref_day_guests = models.IntegerField(choices= GuestPolicy.choices)
     pref_night_guests = models.IntegerField(choices= GuestPolicy.choices)
     pref_animals = models.BooleanField(default= True)

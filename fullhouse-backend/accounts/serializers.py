@@ -5,8 +5,7 @@ from accounts.models import Member
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["username", "password", "email"]
-        read_only_fields = ["first_name", "last_name"]
+        fields = ["username", "password", "email", "first_name", "last_name"]
         extra_kwargs = {
             "password": {"write_only": True},
         }
@@ -20,7 +19,7 @@ class MemberSerializer(serializers.ModelSerializer):
             "user",
             "verified",
             "rooming_status",
-            # "profile_pic",
+            "profile_pic",
             "bio",
             "school",
             "year",
@@ -46,6 +45,8 @@ class MemberSerializer(serializers.ModelSerializer):
             "date_of_birth",
             "account_creation_date",
             "age",
+            "city_name",
+            "state_name",
             "city_coords",
         ]
         read_only_fields = [

@@ -16,6 +16,8 @@ class MemberForm(forms.ModelForm):
             'year',
             'phone_num',
             'gender',
+            'city_name',
+            'state_name',
             'dietary_restrictions',
             'date_of_birth',
             'sleep_time_weekday',
