@@ -94,17 +94,9 @@ def login_user(request):
                 # STOP FUCKING VIBE CODING!!!!
                 # No wonder your fucking login didn't fucking work,
                 # none of the tokens were ever saved in the backend!
-                # The hell do you think auth works by, magic???
-                # If you just spent FIVE FUCKING MINUTES reading the documentation
-                # on the website, you would've saved us all five hours cleaning
-                # up your shit!
 
                 # and your PROPOSED SOLUTION to this was to REWRITE THE
                 # ENTIRE ASS BACKEND IN A DIFFERENT FRAMEWORK???
-                # AS IF THIS WOULD DO ANYTHING TO RESOLVE YOUR INCOMPETENCE?
-                # the issue is not the framework we choose, but it is your
-                # absolute and complete lack of will to read a SINGLE WORD or
-                # learn a SINGLE CONCEPT to improve yourself
 
                 # Login user
                 login(request, user)
@@ -112,17 +104,6 @@ def login_user(request):
                 # Generate authentication token (or use a library like JWT)
                 # auth_key = default_token_generator.make_token(user)
 
-                # you weren't fucking storing auth_key anywhere before
-                # anywhere in the database, how the hell did you
-                # expect the server to authenticate anyone like that?
-                # this literally took ten minutes of reading docs and
-                # stack overflow to fix
-                # literally four lines of code istfg
-
-                # i would be more lenient if you weren't literally exec of this club
-                # and done this longer than I have.
-                # please never push to this repo again.
-                # - eric
                 try: 
                     auth_key = Token.objects.get(user=user).key
                 except Token.DoesNotExist:
