@@ -4,6 +4,10 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import axios from 'axios';
+
+axios.defaults.baseURL = 'localhost:8000'; // TODO: change this to deployment url
+
 
 export default function LoginPage() {
   const router = useRouter();

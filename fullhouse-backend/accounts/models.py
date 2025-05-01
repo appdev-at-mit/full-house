@@ -133,7 +133,7 @@ class Member(models.Model):
 
     @property
     def age(self):
-        return relativedelta(date.today(), self.date_of_birth).years
+        return relativedelta(datetime.date.today(), self.date_of_birth).years
     
     @property
     def city_coords(self) -> tuple[float, float]:

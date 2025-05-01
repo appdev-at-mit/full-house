@@ -8,7 +8,7 @@ from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
 from rest_framework.parsers import JSONParser
 from rest_framework.views import APIView
-from rest_framework.authentication import SessionAuthentication
+from rest_framework.authentication import TokenAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from .models import User, Member
 from .serializers import UserSerializer, MemberSerializer
@@ -16,6 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .forms import MemberForm
 from django import forms
 from rest_framework.authtoken.models import Token
+from django.utils.decorators import method_decorator
 
 
 @csrf_exempt
@@ -89,11 +90,24 @@ def login_user(request):
             print(user)
 
             if user is not None:
+
+                # STOP FUCKING VIBE CODING!!!!
+                # No wonder your fucking login didn't fucking work,
+                # none of the tokens were ever saved in the backend!
+
+                # and your PROPOSED SOLUTION to this was to REWRITE THE
+                # ENTIRE ASS BACKEND IN A DIFFERENT FRAMEWORK???
+
                 # Login user
                 login(request, user)
 
                 # Generate authentication token (or use a library like JWT)
-                auth_key = default_token_generator.make_token(user)
+                # auth_key = default_token_generator.make_token(user)
+
+                try: 
+                    auth_key = Token.objects.get(user=user).key
+                except Token.DoesNotExist:
+                    auth_key = Token.objects.create(user=user).key
 
                 # Return user data and authKey
                 return JsonResponse({
@@ -116,12 +130,17 @@ def login_user(request):
 
 def get_member(func):
     def api_func(self, request, *args, **kwargs):
-        username = request.query_params.get("username")
+        print(request.__dict__)
+        user = request.user
+        print(user)
+        # username = request.query_params.get("username")
+        """
         if not username:
             return JsonResponse({"error": "Username is required"}, status=400)
+        """
         try:
-            out_user = User.objects.get(username=username)
-            out_member = Member.objects.get(user=out_user)
+            # out_user = User.objects.get(username=username)
+            out_member = Member.objects.get(user=user)
         except User.DoesNotExist:
             return JsonResponse({"error": "User not found"}, status=404)
         except Member.DoesNotExist:
@@ -131,8 +150,9 @@ def get_member(func):
     return api_func
 
 
+# @method_decorator(csrf_exempt, name='dispatch')
 class MemberProfileView(APIView):
-    authentication_classes = [SessionAuthentication]
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     @get_member

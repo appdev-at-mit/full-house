@@ -56,6 +56,7 @@ def get_all_listings(request):
     return JsonResponse({'listings': listings_data})
 
 class ProspectiveListingViewSet(viewsets.ModelViewSet):
+
     queryset = ProspectiveListing.objects.all()
     serializer_class = ProspectiveListingSerializer
     permission_classes = [permissions.IsAuthenticated]
