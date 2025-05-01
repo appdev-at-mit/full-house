@@ -9,9 +9,7 @@ import { useRouter } from "next/navigation";
 type Accommodation = {
   id: number;
   poster_name: string;
-  poster_profile_picture: string;
-  bedrooms: number;
-  bathrooms: number;
+  housing_image_base64: string;
   pets_allowed: boolean;
   address: string;
   num_roommates_needed: number;
@@ -129,11 +127,15 @@ export default function AccommodationListings() {
               className="flex items-center p-4 bg-white rounded-lg shadow-md cursor-pointer hover:bg-gray-100 transition"
             >
               <img
-                src={listing.poster_profile_picture}
-                alt="Profile Picture"
+                src={
+                  listing.housing_image_base64
+                    ? `data:image/jpeg;base64,${listing.housing_image_base64}`
+                    : "/Default_pfp.jpg"
+                }
+                alt="Accommodation Picture"
                 width={50}
                 height={50}
-                className="mr-4"
+                className="mr-4 rounded object-cover aspect-square"
               />
               <div>
                 <h3 className="text-lg font-bold">{listing.address}</h3>
@@ -147,11 +149,15 @@ export default function AccommodationListings() {
         {selectedListing ? (
           <div className="flex flex-col items-center">
             <img
-              src={selectedListing.poster_profile_picture}
-              alt="Profile Picture"
+              src={
+                selectedListing.housing_image_base64
+                  ? `data:image/jpeg;base64,${selectedListing.housing_image_base64}`
+                  : "/Default_pfp.jpg"
+              }
+              alt="Accommodation Picture"
               width={450}
               height={450}
-              className="mb-4"
+              className="mb-4 rounded object-cover aspect-square"
             />
             <h2 className="text-xl font-bold">{selectedListing.address}</h2>
             <p className="text-muted-foreground mb-6">Posted by {selectedListing.poster_name}</p>
@@ -159,10 +165,10 @@ export default function AccommodationListings() {
               <h3 className="text-lg font-semibold">Details</h3>
               <ul className="list-disc list-inside text-gray-700">
                 <li>
-                  <strong>Bedrooms:</strong> {selectedListing.bedrooms}
+                  <strong>Bedrooms:</strong> {selectedListing.num_bedrooms}
                 </li>
                 <li>
-                  <strong>Bathrooms:</strong> {selectedListing.bathrooms}
+                  <strong>Bathrooms:</strong> {selectedListing.num_bathrooms}
                 </li>
                 <li>
                   <strong>Pets Allowed:</strong> {selectedListing.pets_allowed ? "Yes" : "No"}

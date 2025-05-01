@@ -9,7 +9,19 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 type FormField = {
   type: string;
-  required: boolean;
+};
+
+const fields: Record<string, string> = {
+  "Start Date": "Lease earliest start date",
+  "End Date": "Lease latest end date",
+  "Address": "Accomodation address",
+  "Housing Image Base64": "Image of accomodation",
+  "Num Bedrooms": "Number of bedrooms",
+  "Num Bathrooms": "Number of bathrooms",
+  "Has Ac": "Has AC",
+  "Has Wifi": "Has WiFi",
+  "Num Roommates Needed": "Number of roommates looking for",
+  "Rent": "Monthly rent",
 };
 
 type FormFields = {
@@ -61,14 +73,16 @@ export default function PostListing() {
     setIsLoading(true);
 
     try {
+      const token = localStorage.getItem("authKey");
+
       const response = await fetch("http://localhost:8000/api/listings/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          'Accept': 'application/json',
+          Accept: "application/json",
+          Authorization: `Token ${token}`,
         },
         body: JSON.stringify(formData),
-        credentials: "include",
       });
 
       if (response.ok) {
@@ -93,31 +107,84 @@ export default function PostListing() {
   };
 
   const renderField = (key: string, field: FormField) => {
-    const label = key
+    let label = key
       .split("_")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
 
+    label =
+      fields[label] || label;
+  
+    const isRequired = true; // add asterisk to all fields
+  
     if (field.type === "checkbox") {
       return (
-        <div key={key} className="flex items-center space-x-2">
-          <Checkbox
+        <div key={key} className="space-y-2">
+          <Label htmlFor={key}>
+            {label}
+            <span className="text-red-500 ml-1">*</span>
+          </Label>
+          <select
             id={key}
-            checked={formData[key] as boolean}
-            onCheckedChange={(checked) => handleChange(key, checked)}
-          />
-          <Label htmlFor={key}>{label}</Label>
+            value={formData[key] ? "Yes" : "No"}
+            onChange={(e) => handleChange(key, e.target.value === "Yes")}
+            className="w-full border border-gray-300 rounded-md p-2"
+          >
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
         </div>
       );
     }
 
+    if (key === "housing_image_base64") {
+      return (
+        <div key={key} className="space-y-2">
+          <Label>
+            Image of Accommodation
+            <span className="text-red-500 ml-1">*</span>
+          </Label>
+          <div className="flex items-center space-x-4">
+            <input
+              id="hidden-file-input"
+              type="file"
+              accept="image/*"
+              style={{ display: "none" }}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  const reader = new FileReader();
+                  reader.onloadend = () => {
+                    handleChange(key, (reader.result as string).split(",")[1]); // save base64 data
+                  };
+                  reader.readAsDataURL(file);
+                }
+              }}
+            />
+            <Button
+              type="button"
+              onClick={() => document.getElementById("hidden-file-input")?.click()}
+            >
+              Upload Image
+            </Button>
+            {formData[key] && (
+              <span className="text-sm text-muted-foreground">Image selected</span>
+            )}
+          </div>
+        </div>
+      );
+    }    
+  
     return (
       <div key={key} className="space-y-2">
-        <Label htmlFor={key}>{label}</Label>
+        <Label htmlFor={key}>
+          {label}
+          <span className="text-red-500 ml-1">*</span>
+        </Label>
         <Input
           id={key}
           type={field.type}
-          required={field.required}
+          required={isRequired}
           value={formData[key] as string}
           onChange={(e) => handleChange(key, e.target.value)}
         />
@@ -127,7 +194,7 @@ export default function PostListing() {
 
   return (
     <div className="container mx-auto p-6 max-w-2xl">
-      <h1 className="text-2xl font-bold mb-6">Post a New Listing</h1>
+      <h2 className="text-2xl font-bold mb-6">Post a New Listing</h2>
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
           {error}
