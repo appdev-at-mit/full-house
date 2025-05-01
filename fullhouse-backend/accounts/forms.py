@@ -1,5 +1,6 @@
 from django import forms
 from .models import Member
+from datetime import date, timedelta
 
 class MemberForm(forms.ModelForm):
     class Meta:
@@ -35,33 +36,33 @@ class MemberForm(forms.ModelForm):
             'pref_sleep_light',
         ]
 
-    widgets = {
-        'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter username'}),
-        'password': forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Enter password'}),
-        'first_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter first name'}),
-        'last_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter last name'}),
-        'email': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your email'}),
-        'bio': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Tell us about yourself'}),
-        'school': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your school'}),
-        'year': forms.Select(attrs={'class': 'form-select'}),
-        'phone_num': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your phone number'}),
-        'gender': forms.Select(attrs={'class': 'form-select'}),
-        'dietary_restrictions': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter dietary restrictions'}),
-        'date_of_birth': forms.DateInput({'class': 'form-control', 'placeholder': 'Enter date of birth'}),
-        'sleep_time_weekday': forms.Select(attrs={'class': 'form-select'}),
-        'sleep_time_weekend': forms.Select(attrs={'class': 'form-select'}),
-        'wake_time_weekday': forms.Select(attrs={'class': 'form-select'}),
-        'wake_time_weekend': forms.Select(attrs={'class': 'form-select'}),
-        'animals': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter any animals you have'}),
-        'additional_notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Additional notes'}),
-        'pref_same_gender': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-        'pref_smoking': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-        'pref_cleanliness': forms.Select(attrs={'class': 'form-select'}),
-        'pref_temperature': forms.Select(attrs={'class': 'form-select'}),
-        'pref_age_min': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Minimum age preference'}),
-        'pref_age_max': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Maximum age preference'}),
-        'pref_day_guests': forms.Select(attrs={'class': 'form-select'}),
-        'pref_night_guests': forms.Select(attrs={'class': 'form-select'}),
-        'pref_animals': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-        'pref_sleep_light': forms.Select(attrs={'class': 'form-select'}),
-    }
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter username'}),
+            'password': forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Enter password'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter first name'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter last name'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Enter your email'}),
+            'bio': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Tell us about yourself'}),
+            'school': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your school'}),
+            'year': forms.Select(attrs={'class': 'form-select'}),
+            'phone_num': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your phone number'}),
+            'gender': forms.Select(attrs={'class': 'form-select'}),
+            'dietary_restrictions': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter dietary restrictions'}),
+            'date_of_birth': forms.DateInput({'class': 'form-control', 'placeholder': 'Enter date of birth', 'type': 'date', 'min': '1900-01-01', 'max': (date.today() - timedelta(days=18 * 365)).isoformat()}),
+            'sleep_time_weekday': forms.Select(attrs={'class': 'form-select'}),
+            'sleep_time_weekend': forms.Select(attrs={'class': 'form-select'}),
+            'wake_time_weekday': forms.Select(attrs={'class': 'form-select'}),
+            'wake_time_weekend': forms.Select(attrs={'class': 'form-select'}),
+            'animals': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter any animals you have'}),
+            'additional_notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Additional notes'}),
+            'pref_same_gender': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'pref_smoking': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'pref_cleanliness': forms.Select(attrs={'class': 'form-select'}),
+            'pref_temperature': forms.Select(attrs={'class': 'form-select'}),
+            'pref_age_min': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Minimum age preference', 'min': 18, 'max': 100}),
+            'pref_age_max': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Maximum age preference', 'min': 18, 'max': 100}),
+            'pref_day_guests': forms.Select(attrs={'class': 'form-select'}),
+            'pref_night_guests': forms.Select(attrs={'class': 'form-select'}),
+            'pref_animals': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'pref_sleep_light': forms.Select(attrs={'class': 'form-select'}),
+        }

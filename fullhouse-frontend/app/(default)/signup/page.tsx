@@ -28,11 +28,13 @@ const SignupPage: React.FC = () => {
           initialData[field.name] = field.type === "checkbox" ? false : "";
         });
         setFormData(initialData);
+        console.log("forms: ", response.data.form_fields)
       })
       .catch((error) => {
         console.error("Error fetching form fields:", error);
       });
   }, []);
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type, checked } = e.target;
@@ -131,7 +133,35 @@ const SignupPage: React.FC = () => {
                   ))}
                 </select>
               )}
-              {field.type !== "textarea" && field.type !== "checkbox" && field.type !== "select" && (
+              {field.type === "date" && (
+                <div>
+                  <input
+                    id={field.name}
+                    name={field.name}
+                    type={field.type}
+                    value={formData[field.name] as string}
+                    onChange={handleChange}
+                    className="p-2 border rounded-md focus:ring focus:ring-blue-300"
+                    min={field.options[0].value}
+                    max={field.options[1].value}
+                  />
+                </div>
+              )}
+              {field.type === "number" && (
+                <div>
+                  <input
+                    id={field.name}
+                    name={field.name}
+                    type={field.type}
+                    value={formData[field.name] as string}
+                    onChange={handleChange}
+                    className="p-2 border rounded-md focus:ring focus:ring-blue-300"
+                    min={field.options.find(obj => obj.label === 'min') ? field.options.find(obj => obj.label === 'min').value : -Infinity}
+                    max={field.options.find(obj => obj.label === 'max') ? field.options.find(obj => obj.label === 'max').value : Infinity}
+                  />
+                </div>
+              )}
+              {field.type !== "number" && field.type !== "date" && field.type !== "textarea" && field.type !== "checkbox" && field.type !== "select" && (
                 <input
                   id={field.name}
                   name={field.name}
