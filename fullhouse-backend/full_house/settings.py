@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "crispy_bootstrap4",
     "phonenumber_field",
     "rest_framework",
+    "rest_framework.authtoken",
     "corsheaders",
 ]
 
@@ -160,7 +161,13 @@ CORS_ALLOW_HEADERS = [
 ]
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
+    ],
+}
+"""
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
-}
+    ],
+    """

@@ -12,7 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
-import axios from "axios";
+import axios from '../../../axios.config';
 
 // Fix for missing default icons in Leaflet
 const customIcon = new L.Icon({
@@ -46,6 +46,37 @@ const mapPins = [
   { id: 20, city: "Boston, MA", num: 260, lat: 42.3601, lng: -71.0589 }
 ];
 
+
+type userData = {
+    username: string,
+    additional_notes: string,
+    age: number,
+    bio: string,
+    city_coords: [number, number],
+    date_of_birth: string,
+    dietary_restrictions: string,
+    gender: number,
+    pref_age_max: number,
+    pref_age_min: number,
+    pref_day_guests: number,
+    pref_night_guests: number,
+    pref_same_gender: boolean,
+    pref_sleep_light: number,
+    pref_smoking: boolean,
+    pref_temperature: number,
+    school: string,
+    sleep_time_weekday: number,
+    sleep_time_weekend: number,
+    user: {
+        email: string,
+        username: string,
+    }
+    verified: boolean,
+    wake_time_weekday: number,
+    wake_time_weekend: number,
+    year: number,
+}
+
 export default function UserProfileMap() {
   const [activityStatus, setActivityStatus] = useState(true);
   const [isEditing, setIsEditing] = useState({
@@ -75,12 +106,17 @@ export default function UserProfileMap() {
   const fetchUserData = async () => {
     try {
       const token = localStorage.getItem("authKey"); // Example: Fetch user token from localStorage
-      const response = await axios.get("/api/auth/get", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = response.data;
+      console.log('token:', token);
+      const response = await axios.get("api/member_profile/", {
+        headers: { 
+            Authorization: `Token ${token}`,
 
-      setUsername(data.name);
+        },
+      });
+      const data = response.data as userData;
+      console.log(data);
+
+      setUsername(data.username);
       setUserClass(data.class);
       setAboutText(data.about);
       setLocationText(data.location);
