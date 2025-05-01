@@ -28,19 +28,22 @@ def member_signup(request):
             widget = field.field.widget
             input_type = "text"
             options = None
-
             if hasattr(widget, 'input_type'):
                 input_type = widget.input_type
                 if input_type == 'select':
                     options = [{"value": choice[0], "label": choice[1]} for choice in field.field.choices]
+                elif input_type == 'date':
+                    options = [{"value": widget.attrs.get("min"), "label": "min"}, {"value": widget.attrs.get("max"), "label": "max"}]
+                elif input_type == 'number':
+                    options = []
+                    if widget.attrs.get("min"):
+                        options += [{"value": widget.attrs.get("min"), "label": "min"}]
+                    if widget.attrs.get("max"):
+                        options += [{"value": widget.attrs.get("max"), "label": "max"}]
             elif isinstance(widget, forms.Textarea):
                 input_type = "textarea"
             elif isinstance(widget, forms.CheckboxInput):
                 input_type = "checkbox"
-            elif isinstance(widget, forms.DateInput):
-                input_type = "date"
-
-            print(field.field.widget)
 
             form_fields.append({
                 "name": field.name,
