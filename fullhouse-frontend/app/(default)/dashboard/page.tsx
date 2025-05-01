@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { Mail, Settings, Edit } from "lucide-react";
+import { Settings, Edit } from "lucide-react";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -103,12 +103,6 @@ export default function UserProfileMap() {
     setUserClass(data.class);
   };
 
-  const handleMailClick = () => {
-    if (isMounted) {
-      router.push("/messages");
-    }
-  };
-
   const handleSettingsClick = () => {
     if (isMounted) {
       router.push("/settings");
@@ -158,10 +152,15 @@ export default function UserProfileMap() {
                 <p className="text-muted-foreground">{userClass}</p>
               </div>
             </div>
-            <Button variant="ghost" onClick={handleMailClick}>
-              <Mail className="h-6 w-6" />
-            </Button>
           </div>
+
+          <Button variant="outline" className="mb-4" onClick={handleSearchHousemateClick}>
+            Search for housemate
+          </Button>
+
+          <Button variant="outline" className="mb-4" onClick={handleSearchHousingClick}>
+            Search for housing
+          </Button>
 
           {/* About Me Section */}
           <div className="mb-6">
@@ -299,15 +298,6 @@ export default function UserProfileMap() {
             <h3 className="text-lg font-semibold">Actively looking for a roommate</h3>
             <Switch checked={activityStatus} onCheckedChange={setActivityStatus} />
           </div>
-
-          {/* Search for Housemate Button */}
-          <Button variant="outline" className="mb-4" onClick={handleSearchHousemateClick}>
-            Search for a housemate
-          </Button>
-
-          <Button variant="outline" className="mb-4" onClick={handleSearchHousingClick}>
-            Search for housing
-          </Button>
 
           <Button variant="outline" className="mb-auto" onClick={handleSettingsClick}>
             <Settings className="mr-2 h-4 w-4" />
