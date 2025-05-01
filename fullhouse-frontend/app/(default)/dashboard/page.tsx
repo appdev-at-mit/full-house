@@ -68,14 +68,14 @@ export default function UserProfileMap() {
   const router = useRouter();
 
   useEffect(() => {
-    // initData();
+    initData();
     setIsMounted(true);
   }, []);
 
   const fetchUserData = async () => {
     try {
-      const token = localStorage.getItem("authToken"); // Example: Fetch user token from localStorage
-      const response = await axios.get("/api/user/preferences", {
+      const token = localStorage.getItem("authKey"); // Example: Fetch user token from localStorage
+      const response = await axios.get("/api/auth/get", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = response.data;
@@ -96,7 +96,9 @@ export default function UserProfileMap() {
   };
 
   const initData = async () => {
+    console.log("init data");
     const data = await fetchUserData();
+    console.log("got data");
     setUsername(data.name);
     setUserClass(data.class);
   };
