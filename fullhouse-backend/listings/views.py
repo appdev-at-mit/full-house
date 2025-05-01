@@ -69,7 +69,7 @@ class ProspectiveListingViewSet(viewsets.ModelViewSet):
         member = Member.objects.get(user=self.request.user)
         serializer.save(poster=member)
 
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], permission_classes=[permissions.AllowAny])
     def form_fields(self, request):
         """Returns the form fields needed for creating a listing"""
         fields = {

@@ -20,6 +20,7 @@ export default function PostListing() {
   const [formFields, setFormFields] = useState<FormFields>({});
   const [formData, setFormData] = useState<{ [key: string]: any }>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -28,10 +29,19 @@ export default function PostListing() {
 
   const fetchFormFields = async () => {
     try {
+      console.log("Fetching form fields...");
       const response = await fetch("http://localhost:8000/api/listings/form_fields/", {
         credentials: "include",
+        headers: {
+          'Accept': 'application/json',
+        },
       });
+      console.log("Response status:", response.status);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
+      console.log("Received form fields:", data);
       setFormFields(data);
       // Initialize form data with empty values
       const initialData: { [key: string]: any } = {};
@@ -39,8 +49,10 @@ export default function PostListing() {
         initialData[key] = data[key].type === "checkbox" ? false : "";
       });
       setFormData(initialData);
+      setError(null);
     } catch (error) {
       console.error("Error fetching form fields:", error);
+      setError("Failed to load form fields. Please try again later.");
     }
   };
 
@@ -53,6 +65,7 @@ export default function PostListing() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          'Accept': 'application/json',
         },
         body: JSON.stringify(formData),
         credentials: "include",
@@ -62,9 +75,11 @@ export default function PostListing() {
         router.push("/listings");
       } else {
         console.error("Error creating listing");
+        setError("Failed to create listing. Please try again.");
       }
     } catch (error) {
       console.error("Error:", error);
+      setError("An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -112,7 +127,12 @@ export default function PostListing() {
 
   return (
     <div className="container mx-auto p-6 max-w-2xl">
-      <h2 className="text-2xl font-bold mb-6">Post a New Listing</h2>
+      <h1 className="text-2xl font-bold mb-6">Post a New Listing</h1>
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          {error}
+        </div>
+      )}
       <form onSubmit={handleSubmit} className="space-y-6">
         {Object.entries(formFields).map(([key, field]) => renderField(key, field))}
         <div className="flex justify-end space-x-4">
