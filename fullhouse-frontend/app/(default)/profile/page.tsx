@@ -7,6 +7,76 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 
+const mapStatusToLabel = (status: number) => {
+  switch (status) {
+    case 0: return "Not looking for housing";
+    case 1: return "Looking for housing";
+    case 2: return "Have housing plans and looking for roommate(s)";
+    default: return "Unknown";
+  }
+};
+
+const mapGenderToLabel = (gender: number) => {
+  switch (gender) {
+    case 0: return "Male";
+    case 1: return "Female";
+    case 2: return "Transmale";
+    case 3: return "Transfemale";
+    case 4: return "Neutral/Other";
+    case 5: return "Prefer not to say";
+    default: return "Unknown";
+  }
+};
+
+const mapYearToLabel = (year: number) => {
+  switch (year) {
+    case 0: return "Freshman Undergraduate";
+    case 1: return "Sophomore Undergraduate";
+    case 2: return "Junior Undergraduate";
+    case 3: return "Senior Undergraduate";
+    case 4: return "Fifth-year Undergraduate";
+    case 5: return "Graduate Student";
+    default: return "Unknown";
+  }
+};
+
+const mapCleanlinessToLabel = (value: number) => {
+  switch (value) {
+    case 0: return "I prefer my living space to be neat and clean all of the time";
+    case 1: return "I like my living space to be clean but I can tolerate some clutter";
+    case 2: return "Mess/clutter does not bother me";
+    default: return "Unknown";
+  }
+};
+
+const mapTempToLabel = (value: number) => {
+  switch (value) {
+    case 0: return "I prefer a relatively warm temperature (above 72F/22C)";
+    case 1: return "I prefer a relatively cool temperature (below 68F/20C)";
+    case 2: return "No preference";
+    default: return "Unknown";
+  }
+};
+
+const mapGuestPolicyToLabel = (value: number) => {
+  switch (value) {
+    case 0: return "Guests should always be coordinated to make sure everyone is comfortable.";
+    case 1: return "Let's talk together about what rules we want to set about guests coming over.";
+    case 2: return "Spontaneity is great! Anything (within reason) is fine by me.";
+    default: return "Unknown";
+  }
+};
+
+const mapSleepLightToLabel = (value: number) => {
+  switch (value) {
+    case 0: return "Lights on";
+    case 1: return "Some minimal light";
+    case 2: return "Completely dark";
+    case 3: return "No preference";
+    default: return "Unknown";
+  }
+};  
+
 type UserProfile = {
   id: number;
   profilePicture: string;
@@ -15,6 +85,7 @@ type UserProfile = {
   aboutText: string;
   locationText: string;
   activityStatus: boolean;
+  email: string;
   preferences: {
     status: string;
     gender: string;
@@ -28,150 +99,8 @@ type UserProfile = {
   };
 };
 
-const mockUsers: UserProfile[] = [
-  {
-    id: 1,
-    profilePicture: "/portrait1.jpg",
-    username: "Josephine Wang",
-    userClass: "2027",
-    aboutText: "I'm an environmental science student who loves hiking and is passionate about starting a campus club focused on sustainability initiatives.",
-    locationText: "Cambridge, MA",
-    activityStatus: true,
-    preferences: {
-      status: "Looking for housing",
-      gender: "Female",
-      year: "Sophomore Undergraduate",
-      sleepTime: "Between 11:00 PM and 1:00 AM",
-      wakeTime: "Between 7:00 AM and 9:00 AM",
-      cleanliness: "I prefer my living space to be neat and clean all of the time",
-      temperature: "No preference",
-      guestPolicy: "Guests should always be coordinated to make sure everyone is comfortable.",
-      sleepLightLevel: "Some minimal light",
-    },
-  },
-  {
-    id: 2,
-    profilePicture: "/pfp3.jpg",
-    username: "Hailey Pan",
-    userClass: "2027",
-    aboutText: "As a graphic design major and former skateboarder, I create art inspired by my love for extreme sports and mentor younger students in skateboarding.",
-    locationText: "Boston, MA",
-    activityStatus: false,
-    preferences: {
-      status: "Have housing plans and looking for roommate(s)",
-      gender: "Female",
-      year: "Sophomore Undergraduate",
-      sleepTime: "After 1:00 AM",
-      wakeTime: "After 11:00 AM",
-      cleanliness: "I like my living space to be clean but I can tolerate some clutter",
-      temperature: "I prefer a relatively warm temperature (above 72F/22C)",
-      guestPolicy: "Let's talk together about what rules we want to set about guests coming over.",
-      sleepLightLevel: "Completely dark",
-    },
-  },
-  {
-    id: 3,
-    profilePicture: "/pfp2.jpg",
-    username: "Christopher Liem",
-    userClass: "2027",
-    aboutText: "I’m a culinary arts student with a passion for authentic Mexican cuisine, and I host cooking workshops to share my heritage with classmates.",
-    locationText: "Boston, MA",
-    activityStatus: true,
-    preferences: {
-      status: "Not looking for housing",
-      gender: "Male",
-      year: "Sophomore Undergraduate",
-      sleepTime: "Between 9:00 PM and 11:00 PM",
-      wakeTime: "Before 7:00 AM",
-      cleanliness: "Mess/clutter does not bother me",
-      temperature: "I prefer a relatively cool temperature (below 68F/20C)",
-      guestPolicy: "Spontaneity is great! Anything (within reason) is fine by me.",
-      sleepLightLevel: "No preference",
-    },
-  },
-  {
-    id: 4,
-    profilePicture: "/pfp7.jpg",
-    username: "Eric Zhan",
-    userClass: "2028",
-    aboutText: "I’m a computer science student who develops educational video games as part of my coursework, aiming to make learning more engaging for kids.",
-    locationText: "Boston, MA",
-    activityStatus: true,
-    preferences: {
-      status: "Not looking for housing",
-      gender: "Male",
-      year: "Freshman Undergraduate",
-      sleepTime: "Between 9:00 PM and 11:00 PM",
-      wakeTime: "Before 7:00 AM",
-      cleanliness: "Mess/clutter does not bother me",
-      temperature: "I prefer a relatively cool temperature (below 68F/20C)",
-      guestPolicy: "Spontaneity is great! Anything (within reason) is fine by me.",
-      sleepLightLevel: "No preference",
-    },
-  },
-  {
-    id: 5,
-    profilePicture: "/pfp5.jpg",
-    username: "Rahsun Komatsuzaki-Fields",
-    userClass: "2028",
-    aboutText: "As a nursing student and yoga enthusiast, I strive to promote mental health awareness on campus through workshops and mindfulness sessions.",
-    locationText: "Cambridge, MA",
-    activityStatus: true,
-    preferences: {
-      status: "Not looking for housing",
-      gender: "Male",
-      year: "Freshman Undergraduate",
-      sleepTime: "Between 9:00 PM and 11:00 PM",
-      wakeTime: "Before 7:00 AM",
-      cleanliness: "Mess/clutter does not bother me",
-      temperature: "I prefer a relatively cool temperature (below 68F/20C)",
-      guestPolicy: "Spontaneity is great! Anything (within reason) is fine by me.",
-      sleepLightLevel: "No preference",
-    },
-  },
-  {
-    id: 6,
-    profilePicture: "/pfp6.jpg",
-    username: "Olivia Tang",
-    userClass: "2027",
-    aboutText: "I’m a photography major who loves traveling, capturing the beauty of different cultures, and sharing my experiences through my social media platform.",
-    locationText: "Cambridge, MA",
-    activityStatus: true,
-    preferences: {
-      status: "Not looking for housing",
-      gender: "Female",
-      year: "Sophomore Undergraduate",
-      sleepTime: "Between 9:00 PM and 11:00 PM",
-      wakeTime: "Before 7:00 AM",
-      cleanliness: "Mess/clutter does not bother me",
-      temperature: "I prefer a relatively cool temperature (below 68F/20C)",
-      guestPolicy: "Spontaneity is great! Anything (within reason) is fine by me.",
-      sleepLightLevel: "No preference",
-    },
-  },
-  {
-    id: 7,
-    profilePicture: "/pfp4.jpg",
-    username: "Sophie Wang",
-    userClass: "2027",
-    aboutText: "I’m a music student blending traditional Korean sounds with contemporary pop, using my performances to raise awareness about social issues on campus.",
-    locationText: "Boston, MA",
-    activityStatus: true,
-    preferences: {
-      status: "Not looking for housing",
-      gender: "Female",
-      year: "Sophomore Undergraduate",
-      sleepTime: "Between 9:00 PM and 11:00 PM",
-      wakeTime: "Before 7:00 AM",
-      cleanliness: "Mess/clutter does not bother me",
-      temperature: "I prefer a relatively cool temperature (below 68F/20C)",
-      guestPolicy: "Spontaneity is great! Anything (within reason) is fine by me.",
-      sleepLightLevel: "No preference",
-    },
-  },
-];
-
 export default function UserProfileMap() {
+  const [allUsers, setAllUsers] = useState<UserProfile[]>([]);
   const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
   const [isMounted, setIsMounted] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -187,8 +116,49 @@ export default function UserProfileMap() {
   const router = useRouter();
 
   useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const token = localStorage.getItem("authKey");
+        const response = await fetch("http://localhost:8000/api/member_profiles/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ only_active: true }),
+        });
+        const data = await response.json();
+  
+        const users = data.users.map((u: any) => ({
+          id: u.user.username,  // set ID to username
+          profilePicture: u.profile_pic || null,
+          username: u.user.username,
+          userClass: mapYearToLabel(u.year),
+          aboutText: u.bio,
+          locationText: `${u.city_name}, ${u.state_name}`,
+          activityStatus: u.rooming_status !== 0,
+          email: u.user.email,
+          preferences: {
+            status: mapStatusToLabel(u.rooming_status),
+            gender: mapGenderToLabel(u.gender),
+            year: mapYearToLabel(u.year),
+            // sleepTime: mapSleepTime(u.sleep_time_weekday),
+            // wakeTime: mapWakeTime(u.wake_time_weekday),
+            cleanliness: mapCleanlinessToLabel(u.pref_cleanliness),
+            temperature: mapTempToLabel(u.pref_temperature),
+            guestPolicy: mapGuestPolicyToLabel(u.pref_day_guests),
+            sleepLightLevel: mapSleepLightToLabel(u.pref_sleep_light),
+          },
+        }));        
+  
+        setAllUsers(users);
+      } catch (err) {
+        console.error("Failed to fetch users:", err);
+      }
+    };
+  
+    fetchUsers();
     setIsMounted(true);
-  }, []);
+  }, []);  
 
   if (!isMounted) {
     return null;
@@ -206,7 +176,7 @@ export default function UserProfileMap() {
     setIsFilterOpen(!isFilterOpen);
   };
 
-  const filteredUsers = mockUsers.filter((user) => {
+  const filteredUsers = allUsers.filter((user) => {
     const matchesSearch = searchTerm
       ? user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.locationText.toLowerCase().includes(searchTerm.toLowerCase())
@@ -262,11 +232,11 @@ export default function UserProfileMap() {
               className="flex items-center p-4 bg-white rounded-lg shadow-md cursor-pointer hover:bg-gray-100 transition"
             >
               <Image
-                src={user.profilePicture}
+                src={user.profilePicture ? `data:image/jpeg;base64,${user.profilePicture}` : "/Default_pfp.jpg"}
                 alt="Profile Picture"
                 width={50}
                 height={50}
-                className="rounded-full mr-4"
+                className="rounded-full mr-4 object-cover aspect-square"
               />
               <div>
                 <h3 className="text-lg font-bold">{user.username}</h3>
@@ -280,11 +250,11 @@ export default function UserProfileMap() {
         {selectedUser ? (
           <div className="flex flex-col items-center">
             <Image
-              src={selectedUser.profilePicture}
+              src={selectedUser.profilePicture ? `data:image/jpeg;base64,${selectedUser.profilePicture}` : "/Default_pfp.jpg"}
               alt="Profile Picture"
               width={250}
               height={250}
-              className="rounded-full mb-4"
+              className="rounded-full mb-4 object-cover aspect-square"
             />
             <h2 className="text-xl font-bold">{selectedUser.username}</h2>
             <p className="text-muted-foreground mb-6">{selectedUser.userClass}</p>
@@ -296,7 +266,7 @@ export default function UserProfileMap() {
               <h3 className="text-lg font-semibold">Location</h3>
               <p className="text-gray-700">{selectedUser.locationText}</p>
             </div>
-            <div className="w-full flex items-center justify-between mb-6">
+            {/* <div className="w-full flex items-center justify-between mb-6">
               <h3 className="text-lg font-semibold">Actively looking for a roommate</h3>
               <span
                 className={`text-sm px-2 py-1 rounded ${
@@ -305,7 +275,7 @@ export default function UserProfileMap() {
               >
                 {selectedUser.activityStatus ? "Yes" : "No"}
               </span>
-            </div>
+            </div> */}
             <div className="w-full">
               <h3 className="text-lg font-semibold">Preferences</h3>
               <ul className="list-disc list-inside text-gray-700">
@@ -317,13 +287,17 @@ export default function UserProfileMap() {
                 ))}
               </ul>
             </div>
-            <Button
+            {/* <Button
               variant="outline"
               className="mt-2 w-full"
               onClick={() => handleMessageClick(selectedUser.id)}
             >
               Message
-            </Button>
+            </Button> */}
+            <div className="w-full mt-6">
+              <h3 className="text-lg font-semibold">Contact</h3>
+              <p className="text-gray-700">{selectedUser.email}</p>
+            </div>
           </div>
         ) : (
           <p className="text-center text-gray-500">Select a user to view their profile</p>

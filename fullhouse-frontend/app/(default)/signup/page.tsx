@@ -10,6 +10,25 @@ interface FormField {
   type: string;
 }
 
+const fields: Record<string, string> = {
+  "Year": "Class year",
+  "Phone num": "Phone number",
+  "Sleep time weekday": "Typical bedtime on weekdays",
+  "Sleep time weekend": "Typical bedtime on weekends",
+  "Wake time weekday": "Typical wake time on weekdays",
+  "Wake time weekend": "Typical wake time on weekends",
+  "Animals": "Allow animals in living space",
+  "Pref same gender": "Do you prefer to live with people of the same gender?",
+  "Pref smoking": "Do you prefer to allow smoking in the living space?",
+  "Pref cleanliness": "How clean do you prefer your living space to be?",
+  "Pref temperature": "What is your preferred room temperature?",
+  "Pref age min": "What is the minimum age of your preferred roommate?",
+  "Pref age max": "What is the maximum age of your preferred roommate?",
+  "Pref day guests": "How do you feel about having guests over in the day?",
+  "Pref night guests": "How do you feel about having guests over at night?",
+  "Pref animals": "Do you have pets?",
+  "Pref sleep light": "What light do you prefer when sleeping?"
+};
 
 const SignupPage: React.FC = () => {
   const router = useRouter();
@@ -84,15 +103,46 @@ const SignupPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
+      <button
+        onClick={() => router.push("/")}
+        className="absolute top-4 left-4 text-gray-600 hover:text-gray-800 font-medium"
+      >
+        ← Back
+      </button>
       <div className="bg-white shadow-md rounded-lg p-8 max-w-md w-full">
         <h1 className="text-5xl mb-6 text-center text-gray-800">Sign Up</h1>
         {successMessage && <p className="text-green-600 bg-green-100 p-3 rounded mb-4">{successMessage}</p>}
         <form onSubmit={handleSubmit} className="space-y-6">
-          {formFields.map((field) => (
+        {formFields.map((field) => {
+          const labelText = fields[field.label] || field.label;
+          const isRequired = field.required;
+
+          return (
             <div key={field.name} className="flex flex-col space-y-1">
               <label htmlFor={field.name} className="text-gray-700 font-medium">
-                {field.label}
+                {labelText}{" "}
+                {isRequired && <span className="text-red-600">*</span>}
               </label>
+
+              {/* Convert checkboxes to Yes/No select */}
+              {field.type === "checkbox" && (
+                <select
+                  id={field.name}
+                  name={field.name}
+                  value={formData[field.name] ? "yes" : "no"}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      [field.name]: e.target.value === "yes",
+                    })
+                  }
+                  className="p-2 border rounded-md focus:ring focus:ring-blue-300"
+                >
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              )}
+
               {field.type === "textarea" && (
                 <textarea
                   id={field.name}
@@ -102,21 +152,7 @@ const SignupPage: React.FC = () => {
                   className="p-2 border rounded-md focus:ring focus:ring-blue-300"
                 />
               )}
-              {field.type === "checkbox" && (
-                <div className="flex items-center space-x-2">
-                  <input
-                    id={field.name}
-                    name={field.name}
-                    type="checkbox"
-                    checked={formData[field.name] as boolean}
-                    onChange={handleChange}
-                    className="h-5 w-5 text-blue-600 focus:ring focus:ring-blue-300 rounded"
-                  />
-                  <label htmlFor={field.name} className="text-gray-700">
-                    {field.label}
-                  </label>
-                </div>
-              )}
+
               {field.type === "select" && (
                 <select
                   id={field.name}
@@ -133,49 +169,54 @@ const SignupPage: React.FC = () => {
                   ))}
                 </select>
               )}
+
               {field.type === "date" && (
-                <div>
-                  <input
-                    id={field.name}
-                    name={field.name}
-                    type={field.type}
-                    value={formData[field.name] as string}
-                    onChange={handleChange}
-                    className="p-2 border rounded-md focus:ring focus:ring-blue-300"
-                    min={field.options[0].value}
-                    max={field.options[1].value}
-                  />
-                </div>
-              )}
-              {field.type === "number" && (
-                <div>
-                  <input
-                    id={field.name}
-                    name={field.name}
-                    type={field.type}
-                    value={formData[field.name] as string}
-                    onChange={handleChange}
-                    className="p-2 border rounded-md focus:ring focus:ring-blue-300"
-                    min={field.options.find(obj => obj.label === 'min') ? field.options.find(obj => obj.label === 'min').value : -Infinity}
-                    max={field.options.find(obj => obj.label === 'max') ? field.options.find(obj => obj.label === 'max').value : Infinity}
-                  />
-                </div>
-              )}
-              {field.type !== "number" && field.type !== "date" && field.type !== "textarea" && field.type !== "checkbox" && field.type !== "select" && (
                 <input
                   id={field.name}
                   name={field.name}
-                  type={field.type}
+                  type="date"
                   value={formData[field.name] as string}
                   onChange={handleChange}
                   className="p-2 border rounded-md focus:ring focus:ring-blue-300"
+                  min={field.options?.[0]?.value}
+                  max={field.options?.[1]?.value}
                 />
               )}
+
+              {field.type === "number" && (
+                <input
+                  id={field.name}
+                  name={field.name}
+                  type="number"
+                  value={formData[field.name] as string}
+                  onChange={handleChange}
+                  className="p-2 border rounded-md focus:ring focus:ring-blue-300"
+                  min={field.options?.find((obj) => obj.label === "min")?.value}
+                  max={field.options?.find((obj) => obj.label === "max")?.value}
+                />
+              )}
+
+              {field.type !== "number" &&
+                field.type !== "date" &&
+                field.type !== "textarea" &&
+                field.type !== "checkbox" &&
+                field.type !== "select" && (
+                  <input
+                    id={field.name}
+                    name={field.name}
+                    type={field.type}
+                    value={formData[field.name] as string}
+                    onChange={handleChange}
+                    className="p-2 border rounded-md focus:ring focus:ring-blue-300"
+                  />
+                )}
+
               {errorMessages[field.name] && (
                 <p className="text-red-600 text-sm">{errorMessages[field.name].join(", ")}</p>
               )}
             </div>
-          ))}
+          );
+        })}
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded-md font-medium hover:bg-blue-700 transition duration-200"

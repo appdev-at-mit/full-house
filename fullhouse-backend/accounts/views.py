@@ -17,6 +17,7 @@ from .forms import MemberForm
 from django import forms
 from rest_framework.authtoken.models import Token
 from django.utils.decorators import method_decorator
+import base64
 
 
 @csrf_exempt
@@ -153,6 +154,21 @@ def get_member(func):
 
     return api_func
 
+@csrf_exempt
+def member_dump(request):
+    if request.method == "POST":
+        request_data = JSONParser().parse(request)
+        only_active = request_data.get("only_active", True)
+
+        filter_criteria = {"rooming_status": Member.Status.INACTIVE} if only_active else {"private_location": True}
+        all_users = Member.objects.exclude(**filter_criteria)
+        print("ALL USERS", all_users)
+
+        serializer = MemberSerializer(all_users, many=True)
+        return JsonResponse({"users": serializer.data}, safe=False)
+
+    return JsonResponse({"error": "Only POST supported"}, status=405)
+
 
 # @method_decorator(csrf_exempt, name='dispatch')
 class MemberProfileView(APIView):
@@ -186,15 +202,15 @@ class MemberProfileView(APIView):
             return JsonResponse(serializer.data, status=200)
         return JsonResponse(serializer.errors, status=400)
 
-    def dump(self, request, format=None):
-        request_data = JSONParser().parse(request)
-        only_active = request_data.get("only_active", True)
+    # def dump(self, request, format=None):
+    #     request_data = JSONParser().parse(request)
+    #     only_active = request_data.get("only_active", True)
 
-        filter_criteria = {"rooming_status": Member.Status.INACTIVE} if only_active else {"private_location": True}
-        all_users = Member.objects.exclude(**filter_criteria)
+    #     filter_criteria = {"rooming_status": Member.Status.INACTIVE} if only_active else {"private_location": True}
+    #     all_users = Member.objects.exclude(**filter_criteria)
 
-        serialized = serializers.serialize("json", all_users)
-        return JsonResponse({"users": json.loads(serialized)}, safe=False)
+    #     serialized = serializers.serialize("json", all_users)
+    #     return JsonResponse({"users": json.loads(serialized)}, safe=False)
 
 
 # @csrf_exempt

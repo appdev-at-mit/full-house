@@ -84,22 +84,108 @@ export default function UserProfileMap() {
     location: false,
     preferences: false,
   });
-  const [username, setUsername] = useState("Josephine Wang");
-  const [userClass, setUserClass] = useState("2027");
-  const [aboutText, setAboutText] = useState("Hi! I am a sophomore majoring in course 6-3. I like traveling, sightseeing, and trying new cuisines.");
-  const [locationText, setLocationText] = useState("Cambridge, MA");
-  const [statusText, setStatusText] = useState("Not looking for housing");
-  const [genderText, setGenderText] = useState("Female");
-  const [cleanText, setCleanText] = useState("I prefer my living space to be neat and clean all of the time");
-  const [tempText, setTempText] = useState("I prefer a relatively warm temperature (above 72F/22C)");
-  const [guestText, setGuestTest] = useState("Spontaneity is great! Anything (within reason) is fine by me.");
-  const [sleepLightText, setSleepLightText] = useState("Completely dark");
+  const [username, setUsername] = useState("");
+  const [userClass, setUserClass] = useState("");
+  const [aboutText, setAboutText] = useState("");
+  const [locationText, setLocationText] = useState("");
+  const [statusText, setStatusText] = useState("");
+  const [genderText, setGenderText] = useState("");
+  const [cleanText, setCleanText] = useState("");
+  const [tempText, setTempText] = useState("");
+  const [guestDayText, setGuestDayText] = useState("");
+  const [guestNightText, setGuestNightText] = useState("");
+  const [sleepLightText, setSleepLightText] = useState("");
+  const [profilePic, setProfilePic] = useState<string | null>(null);
+
+
+  const [editableAbout, setEditableAbout] = useState<string>("");
+  const [editableCity, setEditableCity] = useState<string>("");
+  const [editableState, setEditableState] = useState<string>("");
+  const [editableStatus, setEditableStatus] = useState<number | null>(null);
+  const [editableGender, setEditableGender] = useState<number | null>(null);
+  const [editableClean, setEditableClean] = useState<number | null>(null);
+  const [editableTemp, setEditableTemp] = useState<number | null>(null);
+  const [editableDayGuests, setEditableDayGuests] = useState<number | null>(null);
+  const [editableNightGuests, setEditableNightGuests] = useState<number | null>(null);
+  const [editableSleepLight, setEditableSleepLight] = useState<number | null>(null);
+  const [locationError, setLocationError] = useState<string>("");
+
   const [isMounted, setIsMounted] = useState(false);
 
   const router = useRouter();
 
+  const mapStatusToLabel = (status: number) => {
+    switch (status) {
+      case 0: return "Not looking for housing";
+      case 1: return "Looking for housing";
+      case 2: return "Have housing plans and looking for roommate(s)";
+      default: return "Unknown";
+    }
+  };
+  
+  const mapGenderToLabel = (gender: number) => {
+    switch (gender) {
+      case 0: return "Male";
+      case 1: return "Female";
+      case 2: return "Transmale";
+      case 3: return "Transfemale";
+      case 4: return "Neutral/Other";
+      case 5: return "Prefer not to say";
+      default: return "Unknown";
+    }
+  };
+  
+  const mapYearToLabel = (year: number) => {
+    switch (year) {
+      case 0: return "Freshman Undergraduate";
+      case 1: return "Sophomore Undergraduate";
+      case 2: return "Junior Undergraduate";
+      case 3: return "Senior Undergraduate";
+      case 4: return "Fifth-year Undergraduate";
+      case 5: return "Graduate Student";
+      default: return "Unknown";
+    }
+  };
+  
+  const mapCleanlinessToLabel = (value: number) => {
+    switch (value) {
+      case 0: return "I prefer my living space to be neat and clean all of the time";
+      case 1: return "I like my living space to be clean but I can tolerate some clutter";
+      case 2: return "Mess/clutter does not bother me";
+      default: return "Unknown";
+    }
+  };
+  
+  const mapTempToLabel = (value: number) => {
+    switch (value) {
+      case 0: return "I prefer a relatively warm temperature (above 72F/22C)";
+      case 1: return "I prefer a relatively cool temperature (below 68F/20C)";
+      case 2: return "No preference";
+      default: return "Unknown";
+    }
+  };
+  
+  const mapGuestPolicyToLabel = (value: number) => {
+    switch (value) {
+      case 0: return "Guests should always be coordinated to make sure everyone is comfortable.";
+      case 1: return "Let's talk together about what rules we want to set about guests coming over.";
+      case 2: return "Spontaneity is great! Anything (within reason) is fine by me.";
+      default: return "Unknown";
+    }
+  };
+  
+  const mapSleepLightToLabel = (value: number) => {
+    switch (value) {
+      case 0: return "Lights on";
+      case 1: return "Some minimal light";
+      case 2: return "Completely dark";
+      case 3: return "No preference";
+      default: return "Unknown";
+    }
+  };  
+
   useEffect(() => {
-    initData();
+    fetchUserData();
     setIsMounted(true);
   }, []);
 
@@ -116,27 +202,33 @@ export default function UserProfileMap() {
       const data = response.data as userData;
       console.log(data);
 
-      setUsername(data.username);
-      setUserClass(data.class);
-      setAboutText(data.about);
-      setLocationText(data.location);
-      setStatusText(data.preferences);
-      setGenderText(data.preferences);
-      setCleanText(data.preferences);
-      setTempText(data.preferences);
-      setGuestTest(data.preferences);
-      setSleepLightText(data.preferences);
+      setUsername(`${data.user.username}`);
+      setUserClass(mapYearToLabel(data.year));
+      setAboutText(data.bio);
+      setLocationText(`${data.city_name}, ${data.state_name}`);
+      setStatusText(mapStatusToLabel(data.rooming_status));
+      setGenderText(mapGenderToLabel(data.gender));
+      setCleanText(mapCleanlinessToLabel(data.pref_cleanliness));
+      setTempText(mapTempToLabel(data.pref_temperature));
+      setGuestDayText(mapGuestPolicyToLabel(data.pref_day_guests));
+      setGuestNightText(mapGuestPolicyToLabel(data.pref_night_guests));
+      setSleepLightText(mapSleepLightToLabel(data.pref_sleep_light));
+      setProfilePic(data.profile_pic ?? null);
+
+      // Editable
+      setEditableAbout(data.bio);
+      setEditableCity(data.city_name);
+      setEditableState(data.state_name);
+      setEditableStatus(data.rooming_status);
+      setEditableGender(data.gender);
+      setEditableClean(data.pref_cleanliness);
+      setEditableTemp(data.pref_temperature);
+      setEditableDayGuests(data.pref_day_guests);
+      setEditableNightGuests(data.pref_night_guests);
+      setEditableSleepLight(data.pref_sleep_light);
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
-  };
-
-  const initData = async () => {
-    console.log("init data");
-    const data = await fetchUserData();
-    console.log("got data");
-    setUsername(data.name);
-    setUserClass(data.class);
   };
 
   const handleSettingsClick = () => {
@@ -149,12 +241,63 @@ export default function UserProfileMap() {
     setIsEditing((prev) => ({ ...prev, [section]: true }));
   };
 
-  const handleSaveClick = (section) => {
-    // Disable editing mode for the specific section
-    setIsEditing((prev) => ({
-      ...prev,
-      [section]: false,
-    }));
+  const handleSaveClick = async (section: string) => {
+    setIsEditing((prev) => ({ ...prev, [section]: false }));
+  
+    const token = localStorage.getItem("authKey");
+  
+    if (section === "preferences") {
+      try {
+        await axios.put("api/member_profile/", {
+          rooming_status: editableStatus,
+          gender: editableGender,
+          pref_cleanliness: editableClean,
+          pref_temperature: editableTemp,
+          pref_day_guests: editableDayGuests,
+          pref_night_guests: editableNightGuests,
+          pref_sleep_light: editableSleepLight,
+        }, {
+          headers: { Authorization: `Token ${token}` }
+        });
+        fetchUserData();
+      } catch (error) {
+        console.error("Error saving preferences:", error);
+      }
+    }
+  
+    if (section === "about") {
+      try {
+        await axios.put("api/member_profile/", {
+          bio: editableAbout,
+        }, {
+          headers: { Authorization: `Token ${token}` }
+        });
+        fetchUserData();
+      } catch (error) {
+        console.error("Error saving bio:", error);
+      }
+    }
+  
+    if (section === "location") {
+      if (editableState.length !== 2) {
+        setLocationError("State must be two letters.");
+        setIsEditing((prev) => ({ ...prev, [section]: true }));
+        return;
+      }
+  
+      try {
+        await axios.put("api/member_profile/", {
+          city_name: editableCity,
+          state_name: editableState.toUpperCase(),
+        }, {
+          headers: { Authorization: `Token ${token}` }
+        });
+        setLocationError("");
+        fetchUserData();
+      } catch (error) {
+        console.error("Error saving location:", error);
+      }
+    }
   };  
 
   const handleSearchHousemateClick = () => {
@@ -177,11 +320,11 @@ export default function UserProfileMap() {
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center">
               <Image
-                src="/portrait1.jpg"
+                src={profilePic ? `data:image/jpeg;base64,${profilePic}` : "/Default_pfp.jpg"}
                 alt="Profile Picture"
                 width={64}
                 height={64}
-                className="rounded-full mr-4"
+                className="rounded-full mr-4 object-cover aspect-square"
               />
               <div>
                 <h2 className="text-xl font-bold">{username}</h2>
@@ -212,8 +355,8 @@ export default function UserProfileMap() {
             ) : (
               <div>
                 <Input
-                  value={aboutText}
-                  onChange={(e) => setAboutText(e.target.value)}
+                  value={editableAbout}
+                  onChange={(e) => setEditableAbout(e.target.value)}
                   className="mb-2"
                 />
                 <Button variant="outline" onClick={() => handleSaveClick("about")}>
@@ -235,12 +378,21 @@ export default function UserProfileMap() {
             {!isEditing.location ? (
               <p className="text-muted-foreground">{locationText}</p>
             ) : (
-              <div>
+              <div className="space-y-2">
                 <Input
-                  value={locationText}
-                  onChange={(e) => setLocationText(e.target.value)}
-                  className="mb-2"
+                  placeholder="City"
+                  value={editableCity}
+                  onChange={(e) => setEditableCity(e.target.value)}
                 />
+                <Input
+                  placeholder="State (e.g. MA)"
+                  value={editableState}
+                  onChange={(e) => setEditableState(e.target.value.toUpperCase())}
+                  maxLength={2}
+                />
+                {locationError && (
+                  <p className="text-red-600 text-sm">{locationError}</p>
+                )}
                 <Button variant="outline" onClick={() => handleSaveClick("location")}>
                   Save
                 </Button>
@@ -263,7 +415,8 @@ export default function UserProfileMap() {
                 <p className='mt-2 text-muted-foreground'><strong>Gender Preference:</strong> {genderText}</p>
                 <p className='mt-2 text-muted-foreground'><strong>Cleanliness Preference:</strong> {cleanText}</p>
                 <p className='mt-2 text-muted-foreground'><strong>Temperature Preference:</strong> {tempText}</p>
-                <p className='mt-2 text-muted-foreground'><strong>Guest Policy:</strong> {guestText}</p>
+                <p className='mt-2 text-muted-foreground'><strong>Day Guest Policy:</strong> {guestDayText}</p>
+                <p className='mt-2 text-muted-foreground'><strong>Night Guest Policy:</strong> {guestNightText}</p>
                 <p className='mt-2 text-muted-foreground'><strong>Sleep Light Level:</strong> {sleepLightText}</p>
                 {/* Add other preferences similarly */}
               </div>            
@@ -271,15 +424,16 @@ export default function UserProfileMap() {
               <div>
                 <div>
                   <h4 className="text-sm font-semibold">Looking for Housing</h4>
-                  <select className="form-select">
+                  <select className="form-select" value={editableStatus ?? ""} onChange={(e) => setEditableStatus(Number(e.target.value))}>
                     <option value="0">Not looking for housing</option>
                     <option value="1">Looking for housing</option>
                     <option value="2">Have housing plans and looking for roommate(s)</option>
                   </select>
                 </div>
+
                 <div>
                   <h4 className="text-sm font-semibold">Gender Preference</h4>
-                  <select className="form-select">
+                  <select className="form-select" value={editableGender ?? ""} onChange={(e) => setEditableGender(Number(e.target.value))}>
                     <option value="0">Male</option>
                     <option value="1">Female</option>
                     <option value="2">Transmale</option>
@@ -288,51 +442,57 @@ export default function UserProfileMap() {
                     <option value="5">Prefer not to say</option>
                   </select>
                 </div>
+
                 <div>
                   <h4 className="text-sm font-semibold">Cleanliness</h4>
-                  <select className="form-select">
+                  <select className="form-select" value={editableClean ?? ""} onChange={(e) => setEditableClean(Number(e.target.value))}>
                     <option value="0">I prefer my living space to be neat and clean all of the time</option>
                     <option value="1">I like my living space to be clean but I can tolerate some clutter</option>
                     <option value="2">Mess/clutter does not bother me</option>
                   </select>
                 </div>
+
                 <div>
                   <h4 className="text-sm font-semibold">Temperature</h4>
-                  <select className="form-select">
+                  <select className="form-select" value={editableTemp ?? ""} onChange={(e) => setEditableTemp(Number(e.target.value))}>
                     <option value="0">I prefer a relatively warm temperature (above 72F/22C)</option>
                     <option value="1">I prefer a relatively cool temperature (below 68F/20C)</option>
                     <option value="2">No preference</option>
                   </select>
                 </div>
+
                 <div>
-                  <h4 className="text-sm font-semibold">Guest Policy</h4>
-                  <select className="form-select">
+                  <h4 className="text-sm font-semibold">Day Guest Policy</h4>
+                  <select className="form-select" value={editableDayGuests ?? ""} onChange={(e) => setEditableDayGuests(Number(e.target.value))}>
                     <option value="0">Guests should always be coordinated to make sure everyone is comfortable.</option>
                     <option value="1">Let's talk together about what rules we want to set about guests coming over.</option>
                     <option value="2">Spontaneity is great! Anything (within reason) is fine by me.</option>
                   </select>
                 </div>
+
+                <div>
+                  <h4 className="text-sm font-semibold">Night Guest Policy</h4>
+                  <select className="form-select" value={editableNightGuests ?? ""} onChange={(e) => setEditableNightGuests(Number(e.target.value))}>
+                    <option value="0">Guests should always be coordinated to make sure everyone is comfortable.</option>
+                    <option value="1">Let's talk together about what rules we want to set about guests coming over.</option>
+                    <option value="2">Spontaneity is great! Anything (within reason) is fine by me.</option>
+                  </select>
+                </div>
+
                 <div>
                   <h4 className="text-sm font-semibold">Sleep Light Level</h4>
-                  <select className="form-select">
+                  <select className="form-select" value={editableSleepLight ?? ""} onChange={(e) => setEditableSleepLight(Number(e.target.value))}>
                     <option value="0">Lights on</option>
                     <option value="1">Some minimal light</option>
                     <option value="2">Completely dark</option>
                     <option value="3">No preference</option>
                   </select>
                 </div>
-                {/* Add other preferences similarly */}
                 <Button variant="outline" onClick={() => handleSaveClick("preferences")}>
                   Save
                 </Button>
               </div>
             )}
-          </div>
-
-          {/* Actively looking for a roommate */}
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold">Actively looking for a roommate</h3>
-            <Switch checked={activityStatus} onCheckedChange={setActivityStatus} />
           </div>
 
           <Button variant="outline" className="mb-auto" onClick={handleSettingsClick}>

@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import axios from "@../../../axios.config";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -19,7 +20,40 @@ export default function SettingsPage() {
   const [guestText, setGuestText] = useState("Flexible");
   const [sleepLightText, setSleepLightText] = useState("Dark");
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("authKey");
+        const res = await axios.get("api/member_profile/", {
+          headers: { Authorization: `Token ${token}` },
+        });
+  
+        const data = res.data;
+  
+        setBio(data.bio || "");
+        setLocation(`${data.city_name}, ${data.state_name}`);
+        setActivityStatus(data.rooming_status === 0 ? "No" : "Yes");
+        setStatusText(String(data.rooming_status));
+        setGenderText(String(data.gender));
+        setCleanText(String(data.pref_cleanliness));
+        setTempText(String(data.pref_temperature));
+        setGuestText(String(data.pref_day_guests));
+        setSleepLightText(String(data.pref_sleep_light));
+        setProfilePicture(
+          data.profile_pic ? `data:image/jpeg;base64,${data.profile_pic}` : "/Default_pfp.jpg"
+        );
+        
+  
+      } catch (error) {
+        console.error("Failed to fetch user profile", error);
+      }
+    };
+  
+    fetchData();
+  }, []);  
+
   const handleLogout = () => {
+    router.push("/");
     console.log("Logged out");
   };
 
@@ -27,24 +61,56 @@ export default function SettingsPage() {
     console.log("Account deleted");
   };
 
-  const handleSaveChanges = () => {
-    console.log("Changes saved");
-  };
+  const handleSaveChanges = async () => {
+    try {
+      const token = localStorage.getItem("authKey");
+  
+      const [city, state] = location.split(",").map((s) => s.trim());
+      const profilePicBase64 = profilePicture?.split(",")[1]; // remove "data:image/jpeg;base64,"
+
+      console.log("ACTIVITY", statusText);
+  
+      const payload = {
+        bio,
+        city_name: city,
+        state_name: state,
+        rooming_status: Number(statusText),
+        gender: Number(genderText),
+        pref_cleanliness: Number(cleanText),
+        pref_temperature: Number(tempText),
+        pref_day_guests: Number(guestText),
+        pref_night_guests: Number(guestText), // reuse if you don't have a second field
+        pref_sleep_light: Number(sleepLightText),
+        profile_pic: profilePicBase64 || undefined,
+      };
+  
+      await axios.put("api/member_profile/", payload, {
+        headers: { Authorization: `Token ${token}` },
+      });
+  
+      alert("Changes saved!");
+    } catch (err) {
+      console.error("Failed to save settings", err);
+      alert("Failed to save settings.");
+    }
+  };  
 
   const handleBack = () => {
     router.push("/dashboard");
   };
 
-  const handleProfilePictureChange = (e) => {
-    const file = e.target.files[0];
+  const handleProfilePictureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setProfilePicture(reader.result);
+        if (typeof reader.result === "string") {
+          setProfilePicture(reader.result); // base64 string
+        }
       };
       reader.readAsDataURL(file);
     }
-  };
+  };  
 
   const handlePreferencesChange = (key, value) => {
     setPreferences((prev) => ({ ...prev, [key]: value }));
@@ -77,7 +143,7 @@ export default function SettingsPage() {
           <label className="block text-sm font-semibold mb-1">Profile Picture</label>
           <div className="relative mb-2">
             <img
-              src={profilePicture || "/portrait1.jpg"}
+              src={profilePicture}
               alt="Profile"
               className="w-24 h-24 rounded-full border-2 border-gray-300 object-cover"
             />
@@ -106,7 +172,7 @@ export default function SettingsPage() {
           className="mb-4 w-full"
         />
 
-        <label className="block text-sm font-semibold mb-1">Actively looking for roommate</label>
+        {/* <label className="block text-sm font-semibold mb-1">Actively looking for roommate</label>
         <select
           value={activityStatus}
           onChange={(e) => setActivityStatus(e.target.value)}
@@ -114,9 +180,9 @@ export default function SettingsPage() {
         >
           <option value="Yes">Yes</option>
           <option value="No">No</option>
-        </select>
+        </select> */}
 
-        <label className="block text-sm font-semibold mb-1">Privacy</label>
+        {/* <label className="block text-sm font-semibold mb-1">Privacy</label>
         <select
           value={privacy}
           onChange={(e) => setPrivacy(e.target.value)}
@@ -130,7 +196,7 @@ export default function SettingsPage() {
           Public: Anyone can see your profile and location<br />
           Partial: Anyone can see your profile but your location is hidden<br />
           Private: Your profile and location are hidden
-        </p>
+        </p> */}
 
         <label className="block text-sm font-semibold">Preferences</label>
         <div className="w-full">
