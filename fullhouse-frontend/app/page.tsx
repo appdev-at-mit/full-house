@@ -4,40 +4,39 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import axios from 'axios';
-
-axios.defaults.baseURL = 'localhost:8000'; // TODO: change this to deployment url
-
+import axios from '../axios.config';
 
 export default function LoginPage() {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = async () => {
+  const handleLogin = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/login_user/", {
-        method: "POST",
+      const response = await axios.post("api/login_user/", 
+        { username: username, password: password },
+      {
         headers: {
           "Content-Type": "application/json",
+          // "X-CSRFTOKEN": ,
         },
-        body: JSON.stringify({ "username": username, "password": password }),
       });
   
-      if (response.ok) {
-        const data = await response.json();
-        
-        // Save user and authKey to localStorage
-        localStorage.setItem("user", JSON.stringify(data.user));
-        localStorage.setItem("authKey", data.authKey);
-  
-        // Redirect to dashboard
-        router.push("/dashboard");
-      } else {
-        const errorData = await response.json();
+      const data = response;
+      
+      // Save user and authKey to localStorage
+      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("authKey", data.authKey);
+
+      // Redirect to dashboard
+      router.push("/dashboard");
+
+    } catch (error: any) {
+      if (error.status === 401) {
+        const errorData = error;
         alert(errorData.message || "Login failed");
+        return;
       }
-    } catch (error) {
       console.error("Error logging in:", error);
       alert("An error occurred during login.");
     }

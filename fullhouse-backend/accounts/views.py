@@ -77,9 +77,7 @@ def member_signup(request):
 
 
 
-from django.contrib.auth.tokens import default_token_generator
-
-@csrf_exempt
+# @csrf_exempt
 def login_user(request):
     if request.method == "POST":
         try:

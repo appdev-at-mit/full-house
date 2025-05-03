@@ -29,6 +29,8 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000',
 ]
+CSRF_HEADER_NAME = 'X-CSRFTOKEN'
+CSRF_COOKIE_NAME = 'csrftoken'
 
 
 # Application definition
