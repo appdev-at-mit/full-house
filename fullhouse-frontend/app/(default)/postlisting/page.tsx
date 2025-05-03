@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
+import axios from '../../../axios.config';
 
 type FormField = {
   type: string;
@@ -34,6 +34,32 @@ export default function PostListing() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    const checkLoggedIn = async () => {
+      const token = localStorage.getItem("authKey");
+      if (!token) {
+        router.push("/");
+        return;
+      }
+  
+      try {
+        const response = await axios.get("/api/member_profile/", {
+          headers: { Authorization: `Token ${token}` },
+        });
+      } catch (error: any) {
+        if (error.response && error.response.status === 401) {
+          console.warn("Unauthorized — redirecting to login");
+          localStorage.removeItem("authKey");
+          router.push("/");
+        } else {
+          console.error("Unexpected error during auth check", error);
+        }
+      }
+    };
+  
+    checkLoggedIn();
+  }, [router]);  
 
   useEffect(() => {
     fetchFormFields();

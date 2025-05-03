@@ -175,7 +175,33 @@ export default function UserProfileMap() {
       case 3: return "No preference";
       default: return "Unknown";
     }
-  };  
+  };
+
+  useEffect(() => {
+    const checkLoggedIn = async () => {
+      const token = localStorage.getItem("authKey");
+      if (!token) {
+        router.push("/");
+        return;
+      }
+  
+      try {
+        const response = await axios.get("/api/member_profile/", {
+          headers: { Authorization: `Token ${token}` },
+        });
+      } catch (error: any) {
+        if (error.response && error.response.status === 401) {
+          console.warn("Unauthorized — redirecting to login");
+          localStorage.removeItem("authKey");
+          router.push("/");
+        } else {
+          console.error("Unexpected error during auth check", error);
+        }
+      }
+    };
+  
+    checkLoggedIn();
+  }, [router]);  
 
   useEffect(() => {
     fetchUserData();
@@ -227,7 +253,7 @@ export default function UserProfileMap() {
     };
   
     fetchListings();
-  }, []);  
+  }, []);
 
   const fetchUserData = async () => {
     try {
@@ -235,7 +261,6 @@ export default function UserProfileMap() {
       const response = await axios.get("api/member_profile/", {
         headers: { 
             Authorization: `Token ${token}`,
-
         },
       });
       const data = response.data as userData;

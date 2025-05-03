@@ -21,6 +21,32 @@ export default function SettingsPage() {
   const [sleepLightText, setSleepLightText] = useState("Dark");
 
   useEffect(() => {
+    const checkLoggedIn = async () => {
+      const token = localStorage.getItem("authKey");
+      if (!token) {
+        router.push("/");
+        return;
+      }
+  
+      try {
+        const response = await axios.get("/api/member_profile/", {
+          headers: { Authorization: `Token ${token}` },
+        });
+      } catch (error: any) {
+        if (error.response && error.response.status === 401) {
+          console.warn("Unauthorized — redirecting to login");
+          localStorage.removeItem("authKey");
+          router.push("/");
+        } else {
+          console.error("Unexpected error during auth check", error);
+        }
+      }
+    };
+  
+    checkLoggedIn();
+  }, [router]);  
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem("authKey");
@@ -53,13 +79,40 @@ export default function SettingsPage() {
   }, []);  
 
   const handleLogout = () => {
+    localStorage.removeItem("authKey");
     router.push("/");
     console.log("Logged out");
   };
 
-  const handleDeleteAccount = () => {
-    console.log("Account deleted");
-  };
+  const handleDeleteAccount = async () => {
+    const confirmed = window.confirm("Are you sure you want to permanently delete your account? This action cannot be undone.");
+  
+    if (!confirmed) return;
+  
+    const token = localStorage.getItem("authKey");
+  
+    try {
+      const res = await fetch("http://localhost:8000/api/member_profile/", {
+        method: "DELETE",
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      });
+  
+      if (res.status === 204) {
+        localStorage.removeItem("authKey");
+        router.push("/");
+        console.log("Account deleted successfully");
+      } else {
+        const data = await res.json();
+        console.error("Failed to delete account:", data);
+        alert("Failed to delete your account. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error deleting account:", error);
+      alert("An error occurred while deleting your account.");
+    }
+  };  
 
   const handleSaveChanges = async () => {
     try {

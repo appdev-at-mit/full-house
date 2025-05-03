@@ -178,7 +178,7 @@ class MemberProfileView(APIView):
     @get_member
     def get(self, request, member):
         serializer = MemberSerializer(member)
-        return JsonResponse(serializer.data, safe=False)
+        return JsonResponse(serializer.data, safe=False, status=200)
 
     def post(self, request, format=None):
         user_data = JSONParser().parse(request)
@@ -190,7 +190,9 @@ class MemberProfileView(APIView):
 
     @get_member
     def delete(self, request, member):
+        user = member.user
         member.delete()
+        user.delete()
         return JsonResponse({"message": "Deleted successfully"}, status=204)
 
     @get_member
