@@ -48,7 +48,6 @@ const mapPins = [
 
 
 type userData = {
-    username: string,
     additional_notes: string,
     age: number,
     bio: string,

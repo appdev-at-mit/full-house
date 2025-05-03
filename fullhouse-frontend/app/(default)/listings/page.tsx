@@ -5,6 +5,7 @@ import { Search, Filter as FilterIcon, Home, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
+import axios from '../../../axios.config';
 
 type Accommodation = {
   id: number;
@@ -23,6 +24,35 @@ type Accommodation = {
   num_bathrooms: number;
 };
 
+type userData = {
+  additional_notes: string,
+  age: number,
+  bio: string,
+  city_coords: [number, number],
+  date_of_birth: string,
+  dietary_restrictions: string,
+  gender: number,
+  pref_age_max: number,
+  pref_age_min: number,
+  pref_day_guests: number,
+  pref_night_guests: number,
+  pref_same_gender: boolean,
+  pref_sleep_light: number,
+  pref_smoking: boolean,
+  pref_temperature: number,
+  school: string,
+  sleep_time_weekday: number,
+  sleep_time_weekend: number,
+  user: {
+      email: string,
+      username: string,
+  }
+  verified: boolean,
+  wake_time_weekday: number,
+  wake_time_weekend: number,
+  year: number,
+}
+
 export default function AccommodationListings() {
   const [selectedListing, setSelectedListing] = useState<Accommodation | null>(null);
   const [isMounted, setIsMounted] = useState(false);
@@ -35,12 +65,31 @@ export default function AccommodationListings() {
     bathrooms: "",
     location: "",
   });
+  const [loggedUsername, setLoggedUsername] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
     setIsMounted(true);
     fetchListings();
-  }, []);
+    fetchUser();
+  }, []);  
+
+  const fetchUser = async () => {
+    try {
+      const token = localStorage.getItem("authKey"); // Example: Fetch user token from localStorage
+      console.log('token:', token);
+      const response = await axios.get("api/member_profile/", {
+        headers: { 
+            Authorization: `Token ${token}`,
+
+        },
+      });
+      const data = response.data as userData;
+      setLoggedUsername(data.user.username);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
 
   const fetchListings = async () => {
     try {
@@ -63,6 +112,28 @@ export default function AccommodationListings() {
   const toggleFilterPopup = () => {
     setIsFilterOpen(!isFilterOpen);
   };
+
+  const handleListingDelete = async (listingId: number) => {
+    const confirmed = window.confirm("Are you sure you want to delete this listing?");
+  
+    if (!confirmed) return;
+  
+    try {
+      const response = await fetch(`http://localhost:8000/api/delete_listing/${listingId}/`, {
+        method: 'DELETE',
+      });
+  
+      if (response.ok) {
+        window.location.reload();
+      } else {
+        console.error("Failed to delete listing");
+        alert("Failed to delete the listing. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error deleting listing:", error);
+      alert("An error occurred while deleting the listing.");
+    }
+  };  
 
   const filteredListings = listings.filter((listing) => {
     const matchesSearch = searchTerm
@@ -148,6 +219,28 @@ export default function AccommodationListings() {
       <div className="w-1/2 p-6 border-r border-border overflow-y-auto" style={{ maxHeight: "100vh" }}>
         {selectedListing ? (
           <div className="flex flex-col items-center">
+            {loggedUsername === selectedListing.poster_name && (
+            <div className="self-end mb-2">
+              <Button
+                variant="destructive"
+                onClick={async () => {
+                  try {
+                    handleListingDelete(selectedListing.id);
+                    if (response.ok) {
+                      setListings((prev) => prev.filter((l) => l.id !== selectedListing.id));
+                      setSelectedListing(null);
+                    } else {
+                      console.error("Failed to delete listing");
+                    }
+                  } catch (err) {
+                    console.error("Error deleting listing:", err);
+                  }
+                }}
+              >
+                Delete
+              </Button>
+            </div>
+          )}
             <img
               src={
                 selectedListing.housing_image_base64
