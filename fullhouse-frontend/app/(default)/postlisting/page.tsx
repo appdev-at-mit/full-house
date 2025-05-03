@@ -116,6 +116,28 @@ export default function PostListing() {
       fields[label] || label;
   
     const isRequired = true; // add asterisk to all fields
+
+    if (field.type === "date") {
+      const today = new Date().toISOString().split("T")[0];
+      const minDate = key === "end_date" ? today : undefined;
+    
+      return (
+        <div key={key} className="space-y-2">
+          <Label htmlFor={key}>
+            {label}
+            <span className="text-red-500 ml-1">*</span>
+          </Label>
+          <Input
+            id={key}
+            type="date"
+            required={isRequired}
+            value={formData[key] as string}
+            min={minDate}
+            onChange={(e) => handleChange(key, e.target.value)}
+          />
+        </div>
+      );
+    }
   
     if (field.type === "checkbox") {
       return (

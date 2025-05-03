@@ -44,6 +44,8 @@ class ProspectiveListing(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     address = models.CharField(max_length=500)
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=2)
     housing_image_base64 = models.TextField(blank=True, null=True)
     contact_info = models.CharField(max_length=200)
     poster = models.ForeignKey(Member, on_delete=models.CASCADE, related_name="prospective_listings")

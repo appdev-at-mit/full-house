@@ -8,7 +8,7 @@ class ProspectiveListingSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProspectiveListing
         fields = [
-            'id', 'start_date', 'end_date', 'address', 'housing_image_base64',
+            'id', 'start_date', 'end_date', 'address', 'city', 'state', 'housing_image_base64',
             'contact_info', 'poster_name', 'poster_profile_picture', 'num_bedrooms',
             'num_bathrooms', 'has_ac', 'has_wifi', 'pets_allowed', 'num_roommates_needed',
             'rent'

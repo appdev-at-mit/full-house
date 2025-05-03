@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import axios from '../../../axios.config';
+import { useSearchParams } from "next/navigation";
 
 type Accommodation = {
   id: number;
@@ -13,6 +14,8 @@ type Accommodation = {
   housing_image_base64: string;
   pets_allowed: boolean;
   address: string;
+  city: string;
+  state: string;
   num_roommates_needed: number;
   start_date: string;
   end_date: string;
@@ -67,12 +70,32 @@ export default function AccommodationListings() {
   });
   const [loggedUsername, setLoggedUsername] = useState<string | null>(null);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const selectedId = searchParams.get("id");
 
   useEffect(() => {
     setIsMounted(true);
-    fetchListings();
     fetchUser();
-  }, []);  
+  }, []);
+
+  useEffect(() => {
+    const fetchListings = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/api/listings/");
+        const data: Accommodation[] = await response.json();
+        setListings(data);
+  
+        if (selectedId) {
+          const match = data.find((listing) => listing.id === Number(selectedId));
+          if (match) setSelectedListing(match);
+        }
+      } catch (error) {
+        console.error("Error fetching listings:", error);
+      }
+    };
+  
+    fetchListings();
+  }, [selectedId]);
 
   const fetchUser = async () => {
     try {
@@ -138,6 +161,8 @@ export default function AccommodationListings() {
   const filteredListings = listings.filter((listing) => {
     const matchesSearch = searchTerm
       ? listing.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        listing.city.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        listing.state.toLowerCase().includes(searchTerm.toLowerCase()) ||
         listing.poster_name.toLowerCase().includes(searchTerm.toLowerCase())
       : true;
 
@@ -145,7 +170,7 @@ export default function AccommodationListings() {
       (!filters.pets_allowed || String(listing.pets_allowed) === filters.pets_allowed) &&
       (!filters.bedrooms || listing.num_bedrooms.toString() === filters.bedrooms) &&
       (!filters.bathrooms || listing.num_bathrooms.toString() === filters.bathrooms) &&
-      (!filters.location || listing.address.toLowerCase().includes(filters.location.toLowerCase()));
+      (!filters.location || listing.address.toLowerCase().includes(filters.location.toLowerCase()) || listing.city.toLowerCase().includes(filters.location.toLowerCase()) || listing.state.toLowerCase().includes(filters.location.toLowerCase()));
 
     return matchesSearch && matchesFilters;
   });
@@ -209,7 +234,7 @@ export default function AccommodationListings() {
                 className="mr-4 rounded object-cover aspect-square"
               />
               <div>
-                <h3 className="text-lg font-bold">{listing.address}</h3>
+                <h3 className="text-lg font-bold">{listing.address}, {listing.city}, {listing.state}</h3>
                 <p className="text-sm text-muted-foreground">Posted by {listing.poster_name}</p>
               </div>
             </div>
@@ -252,7 +277,7 @@ export default function AccommodationListings() {
               height={450}
               className="mb-4 rounded object-cover aspect-square"
             />
-            <h2 className="text-xl font-bold">{selectedListing.address}</h2>
+            <h2 className="text-xl font-bold">{selectedListing.address}, {selectedListing.city}, {selectedListing.state}</h2>
             <p className="text-muted-foreground mb-6">Posted by {selectedListing.poster_name}</p>
             <div className="w-full mb-6">
               <h3 className="text-lg font-semibold">Details</h3>
