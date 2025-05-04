@@ -11,6 +11,17 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+
+
+# dynamically switch between dev mode and 
+# prod mode depending on os variables
+# requires the following variables to be set:
+# PUBLIC_IP
+# PROD
+# DJANGO_SECRET_KEY
+public_ip = os.environ.get("PUBLIC_IP", '')
+running_in_prod = bool(os.environ.get("PROD", False))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,16 +31,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-8+x=-_o%zn*ra^=(@%bzs!k5do+d=44c)e*chmsx)m45&k#7ik"
+insecure_key = "django-insecure-8+x=-_o%zn*ra^=(@%bzs!k5do+d=44c)e*chmsx)m45&k#7ik"
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', insecure_key)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = not running_in_prod
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', public_ip]
+
 CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:3000',
+    'http://localhost:3000, https://mitfullhouse.org',
 ]
 
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
 # Application definition
 
