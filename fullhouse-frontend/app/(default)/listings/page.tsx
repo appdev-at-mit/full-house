@@ -126,7 +126,6 @@ export default function AccommodationListings() {
   const fetchUser = async () => {
     try {
       const token = localStorage.getItem("authKey"); // Example: Fetch user token from localStorage
-      console.log('token:', token);
       const response = await axios.get("api/member_profile/", {
         headers: { 
             Authorization: `Token ${token}`,

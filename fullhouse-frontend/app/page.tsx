@@ -23,7 +23,6 @@ export default function LoginPage() {
         const response = await axios.get("/api/member_profile/", {
           headers: { Authorization: `Token ${token}` },
         });
-        console.log("STATUS", response.status);
         if (response.status === 200) {
           localStorage.setItem("user", JSON.stringify(response.data));
           router.push("/dashboard");

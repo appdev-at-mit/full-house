@@ -47,7 +47,6 @@ const SignupPage: React.FC = () => {
           initialData[field.name] = field.type === "checkbox" ? false : "";
         });
         setFormData(initialData);
-        console.log("forms: ", response.data.form_fields)
       })
       .catch((error) => {
         console.error("Error fetching form fields:", error);

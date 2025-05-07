@@ -67,19 +67,16 @@ export default function PostListing() {
 
   const fetchFormFields = async () => {
     try {
-      console.log("Fetching form fields...");
       const response = await fetch("http://localhost:8000/api/listings/form_fields/", {
         credentials: "include",
         headers: {
           'Accept': 'application/json',
         },
       });
-      console.log("Response status:", response.status);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      console.log("Received form fields:", data);
       setFormFields(data);
       // Initialize form data with empty values
       const initialData: { [key: string]: any } = {};

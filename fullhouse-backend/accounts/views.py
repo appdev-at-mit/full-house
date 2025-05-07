@@ -60,7 +60,6 @@ def member_signup(request):
     elif request.method == "POST":
         form = MemberForm(request.POST)
         if form.is_valid():
-            print("VALID")
             new_user = User(username=form.data['username'], 
                             first_name=form.data['first_name'],
                             last_name = form.data['last_name'],
@@ -92,17 +91,8 @@ def login_user(request):
 
             # Authenticate user
             user = authenticate(request, username=username, password=password)
-            print(user)
 
             if user is not None:
-
-                # STOP FUCKING VIBE CODING!!!!
-                # No wonder your fucking login didn't fucking work,
-                # none of the tokens were ever saved in the backend!
-
-                # and your PROPOSED SOLUTION to this was to REWRITE THE
-                # ENTIRE ASS BACKEND IN A DIFFERENT FRAMEWORK???
-
                 # Login user
                 login(request, user)
 
@@ -135,9 +125,7 @@ def login_user(request):
 
 def get_member(func):
     def api_func(self, request, *args, **kwargs):
-        print(request.__dict__)
         user = request.user
-        print(user)
         # username = request.query_params.get("username")
         """
         if not username:
@@ -162,7 +150,6 @@ def member_dump(request):
 
         filter_criteria = {"rooming_status": Member.Status.INACTIVE} if only_active else {"private_location": True}
         all_users = Member.objects.exclude(**filter_criteria)
-        print("ALL USERS", all_users)
 
         serializer = MemberSerializer(all_users, many=True)
         return JsonResponse({"users": serializer.data}, safe=False)

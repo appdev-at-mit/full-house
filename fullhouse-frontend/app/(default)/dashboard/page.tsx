@@ -228,7 +228,6 @@ export default function UserProfileMap() {
                 `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(fullAddress)}&format=json&limit=1`
               );
               const geo = await response.json();
-              console.log("Geocoded", fullAddress, "->", geo);
   
               if (geo.length > 0) {
                 return {

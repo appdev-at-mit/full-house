@@ -81,7 +81,6 @@ export default function SettingsPage() {
   const handleLogout = () => {
     localStorage.removeItem("authKey");
     router.push("/");
-    console.log("Logged out");
   };
 
   const handleDeleteAccount = async () => {
@@ -102,7 +101,6 @@ export default function SettingsPage() {
       if (res.status === 204) {
         localStorage.removeItem("authKey");
         router.push("/");
-        console.log("Account deleted successfully");
       } else {
         const data = await res.json();
         console.error("Failed to delete account:", data);
@@ -120,8 +118,6 @@ export default function SettingsPage() {
   
       const [city, state] = location.split(",").map((s) => s.trim());
       const profilePicBase64 = profilePicture?.split(",")[1]; // remove "data:image/jpeg;base64,"
-
-      console.log("ACTIVITY", statusText);
   
       const payload = {
         bio,
