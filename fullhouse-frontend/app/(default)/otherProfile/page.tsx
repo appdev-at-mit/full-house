@@ -81,7 +81,7 @@ export default function OtherProfile() {
                 </div>
                 <div className="my-5">
                     <h2 className="text-2xl font-bold mb-2 my-5">Other people in the same area:</h2>
-                    {/* Replce using components and a list of people; for now I have four duplicate users as an example*/}
+                    {/* Replace using components and a list of people; for now I have four duplicate users as an example*/}
                     <div className="flex flex-row grid grid-cols-3 gap-4">
                         {mockUser()}
                         {mockUser()}

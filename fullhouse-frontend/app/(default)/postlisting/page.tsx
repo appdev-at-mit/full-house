@@ -14,8 +14,8 @@ type FormField = {
 const fields: Record<string, string> = {
   "Start Date": "Lease earliest start date",
   "End Date": "Lease latest end date",
-  "Address": "Accomodation address",
-  "Housing Image Base64": "Image of accomodation",
+  "Address": "Accommodation address",
+  "Housing Image Base64": "Image of accommodation",
   "Num Bedrooms": "Number of bedrooms",
   "Num Bathrooms": "Number of bathrooms",
   "Has Ac": "Has AC",

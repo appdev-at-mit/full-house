@@ -37,8 +37,8 @@ class Member(models.Model):
     class Gender(models.IntegerChoices): # this was modeled after USAO roommate preference form
         MALE = 0, "Male"
         FEMALE = 1, "Female"
-        TRANSMALE = 2, "Transmale"
-        TRANSFEMALE = 3, "Transfemale"
+        TRANSMALE = 2, "Trans male"
+        TRANSFEMALE = 3, "Trans female"
         NEUTRAL = 4, "Neutral/Other"
         NO_SELECTION = 5, "Prefer not to say"
 

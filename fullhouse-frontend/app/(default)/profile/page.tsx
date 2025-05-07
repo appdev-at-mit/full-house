@@ -21,8 +21,8 @@ const mapGenderToLabel = (gender: number) => {
   switch (gender) {
     case 0: return "Male";
     case 1: return "Female";
-    case 2: return "Transmale";
-    case 3: return "Transfemale";
+    case 2: return "Trans male";
+    case 3: return "Trans female";
     case 4: return "Neutral/Other";
     case 5: return "Prefer not to say";
     default: return "Unknown";

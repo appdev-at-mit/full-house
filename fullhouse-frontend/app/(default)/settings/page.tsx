@@ -268,8 +268,8 @@ export default function SettingsPage() {
           >
             <option value="0">Male</option>
             <option value="1">Female</option>
-            <option value="2">Transmale</option>
-            <option value="3">Transfemale</option>
+            <option value="2">Trans male</option>
+            <option value="3">Trans female</option>
             <option value="4">Neutral/Other</option>
             <option value="5">Prefer not to say</option>
           </select>
