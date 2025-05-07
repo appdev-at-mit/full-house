@@ -1,23 +1,16 @@
 import datetime
-import json
-import re
-from django.shortcuts import render
 from django.http import JsonResponse
-from django.contrib.auth import authenticate, login, logout
-from django.core import serializers
-from django.core.serializers.json import DjangoJSONEncoder
+from django.contrib.auth import authenticate, login
 from rest_framework.parsers import JSONParser
 from rest_framework.views import APIView
-from rest_framework.authentication import TokenAuthentication, BasicAuthentication
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from .models import User, Member
-from .serializers import UserSerializer, MemberSerializer
+from .serializers import MemberSerializer
 from django.views.decorators.csrf import csrf_exempt
 from .forms import MemberForm
 from django import forms
 from rest_framework.authtoken.models import Token
-from django.utils.decorators import method_decorator
-import base64
 
 
 @csrf_exempt
@@ -66,7 +59,6 @@ def member_signup(request):
                             email = form.data['email'])
             new_user.set_password(form.data['password'])
             new_member = form.save(commit=False)
-            # new_member.user = request.user
             new_member.user = new_user
             new_member.account_creation_date = datetime.date.today()
             new_member.user.save()
@@ -75,8 +67,6 @@ def member_signup(request):
         return JsonResponse(form.errors, status=400)
 
 
-
-from django.contrib.auth.tokens import default_token_generator
 
 @csrf_exempt
 def login_user(request):
@@ -95,10 +85,6 @@ def login_user(request):
             if user is not None:
                 # Login user
                 login(request, user)
-
-                # Generate authentication token (or use a library like JWT)
-                # auth_key = default_token_generator.make_token(user)
-
                 try: 
                     auth_key = Token.objects.get(user=user).key
                 except Token.DoesNotExist:
@@ -126,13 +112,11 @@ def login_user(request):
 def get_member(func):
     def api_func(self, request, *args, **kwargs):
         user = request.user
-        # username = request.query_params.get("username")
         """
         if not username:
             return JsonResponse({"error": "Username is required"}, status=400)
         """
         try:
-            # out_user = User.objects.get(username=username)
             out_member = Member.objects.get(user=user)
         except User.DoesNotExist:
             return JsonResponse({"error": "User not found"}, status=404)
@@ -157,7 +141,6 @@ def member_dump(request):
     return JsonResponse({"error": "Only POST supported"}, status=405)
 
 
-# @method_decorator(csrf_exempt, name='dispatch')
 class MemberProfileView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -190,25 +173,3 @@ class MemberProfileView(APIView):
             serializer.save()
             return JsonResponse(serializer.data, status=200)
         return JsonResponse(serializer.errors, status=400)
-
-    # def dump(self, request, format=None):
-    #     request_data = JSONParser().parse(request)
-    #     only_active = request_data.get("only_active", True)
-
-    #     filter_criteria = {"rooming_status": Member.Status.INACTIVE} if only_active else {"private_location": True}
-    #     all_users = Member.objects.exclude(**filter_criteria)
-
-    #     serialized = serializers.serialize("json", all_users)
-    #     return JsonResponse({"users": json.loads(serialized)}, safe=False)
-
-
-# @csrf_exempt
-# def test_tiny(request):
-#     if request.method == "POST":
-#         tiny_data = JSONParser().parse(request)
-#         serializer = TinySerializer(data=tiny_data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return JsonResponse(serializer.data, status=201)
-#         return JsonResponse(serializer.errors, status=400)
-#     return JsonResponse({"error": "GET method not allowed for this endpoint"}, status=405)

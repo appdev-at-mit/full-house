@@ -1,4 +1,3 @@
-from rest_framework.views import APIView
 from django.http import JsonResponse
 from django.db import models
 from rest_framework.decorators import api_view
@@ -77,8 +76,6 @@ def init_socket(request):
     socketid = request.data.get('socketid')
     if not socketid:
         return JsonResponse({"error": "socketid is required"}, status=400)
-
-    user = request.user  # Assuming the user is authenticated
     # For this example, we are not storing the socket ID in the database,
     # but you could store it in a separate table if needed for socket communication.
     

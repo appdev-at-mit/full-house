@@ -1,5 +1,4 @@
 import datetime
-import typing
 from geopy import geocoders
 from dateutil.relativedelta import relativedelta
 from django.db import models

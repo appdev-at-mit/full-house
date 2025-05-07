@@ -1,6 +1,4 @@
 from django.db import models
-import datetime
-import typing
 from django.contrib.auth.models import User
 
 # Message Model
