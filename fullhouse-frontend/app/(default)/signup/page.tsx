@@ -64,6 +64,11 @@ const SignupPage: React.FC = () => {
   };
 
   const handleSubmit = (e: React.FormEvent) => {
+    if (formData["email"] && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData["email"] as string)) {
+      setErrorMessages({ email: ["Please enter a valid email address."] });
+      return;
+    }
+    
     e.preventDefault();
     const formEncodedData = new URLSearchParams();
     Object.entries(formData).forEach(([key, value]) => {
@@ -191,8 +196,7 @@ const SignupPage: React.FC = () => {
                   value={formData[field.name] as string}
                   onChange={handleChange}
                   className="p-2 border rounded-md focus:ring focus:ring-blue-300"
-                  min={field.options?.find((obj) => obj.label === "min")?.value}
-                  max={field.options?.find((obj) => obj.label === "max")?.value}
+                  min={0}
                 />
               )}
 

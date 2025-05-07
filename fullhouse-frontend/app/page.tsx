@@ -3,16 +3,39 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from 'axios';
 
-axios.defaults.baseURL = 'localhost:8000'; // TODO: change this to deployment url
+axios.defaults.baseURL = 'http://localhost:8000'; // TODO: change this to deployment url
 
 
 export default function LoginPage() {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    const checkLoggedIn = async () => {
+      const token = localStorage.getItem("authKey");
+      if (!token) return;
+
+      try {
+        const response = await axios.get("/api/member_profile/", {
+          headers: { Authorization: `Token ${token}` },
+        });
+        console.log("STATUS", response.status);
+        if (response.status === 200) {
+          localStorage.setItem("user", JSON.stringify(response.data));
+          router.push("/dashboard");
+        }
+      } catch (error) {
+        console.warn("Token invalid or expired, stay on login page");
+        localStorage.removeItem("authKey");
+      }
+    };
+
+    checkLoggedIn();
+  }, [router]);
 
   const handleLogin = async () => {
     try {
@@ -26,9 +49,6 @@ export default function LoginPage() {
   
       if (response.ok) {
         const data = await response.json();
-        
-        // Save user and authKey to localStorage
-        localStorage.setItem("user", JSON.stringify(data.user));
         localStorage.setItem("authKey", data.authKey);
   
         // Redirect to dashboard

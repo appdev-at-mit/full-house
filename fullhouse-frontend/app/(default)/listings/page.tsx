@@ -5,6 +5,8 @@ import { Search, Filter as FilterIcon, Home, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
+import axios from '../../../axios.config';
+import { useSearchParams } from "next/navigation";
 
 type Accommodation = {
   id: number;
@@ -12,6 +14,8 @@ type Accommodation = {
   housing_image_base64: string;
   pets_allowed: boolean;
   address: string;
+  city: string;
+  state: string;
   num_roommates_needed: number;
   start_date: string;
   end_date: string;
@@ -22,6 +26,35 @@ type Accommodation = {
   num_bedrooms: number;
   num_bathrooms: number;
 };
+
+type userData = {
+  additional_notes: string,
+  age: number,
+  bio: string,
+  city_coords: [number, number],
+  date_of_birth: string,
+  dietary_restrictions: string,
+  gender: number,
+  pref_age_max: number,
+  pref_age_min: number,
+  pref_day_guests: number,
+  pref_night_guests: number,
+  pref_same_gender: boolean,
+  pref_sleep_light: number,
+  pref_smoking: boolean,
+  pref_temperature: number,
+  school: string,
+  sleep_time_weekday: number,
+  sleep_time_weekend: number,
+  user: {
+      email: string,
+      username: string,
+  }
+  verified: boolean,
+  wake_time_weekday: number,
+  wake_time_weekend: number,
+  year: number,
+}
 
 export default function AccommodationListings() {
   const [selectedListing, setSelectedListing] = useState<Accommodation | null>(null);
@@ -35,12 +68,77 @@ export default function AccommodationListings() {
     bathrooms: "",
     location: "",
   });
+  const [loggedUsername, setLoggedUsername] = useState<string | null>(null);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const selectedId = searchParams.get("id");
+
+  useEffect(() => {
+    const checkLoggedIn = async () => {
+      const token = localStorage.getItem("authKey");
+      if (!token) {
+        router.push("/");
+        return;
+      }
+  
+      try {
+        const response = await axios.get("/api/member_profile/", {
+          headers: { Authorization: `Token ${token}` },
+        });
+      } catch (error: any) {
+        if (error.response && error.response.status === 401) {
+          console.warn("Unauthorized — redirecting to login");
+          localStorage.removeItem("authKey");
+          router.push("/");
+        } else {
+          console.error("Unexpected error during auth check", error);
+        }
+      }
+    };
+  
+    checkLoggedIn();
+  }, [router]);  
 
   useEffect(() => {
     setIsMounted(true);
-    fetchListings();
+    fetchUser();
   }, []);
+
+  useEffect(() => {
+    const fetchListings = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/api/listings/");
+        const data: Accommodation[] = await response.json();
+        setListings(data);
+  
+        if (selectedId) {
+          const match = data.find((listing) => listing.id === Number(selectedId));
+          if (match) setSelectedListing(match);
+        }
+      } catch (error) {
+        console.error("Error fetching listings:", error);
+      }
+    };
+  
+    fetchListings();
+  }, [selectedId]);
+
+  const fetchUser = async () => {
+    try {
+      const token = localStorage.getItem("authKey"); // Example: Fetch user token from localStorage
+      console.log('token:', token);
+      const response = await axios.get("api/member_profile/", {
+        headers: { 
+            Authorization: `Token ${token}`,
+
+        },
+      });
+      const data = response.data as userData;
+      setLoggedUsername(data.user.username);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
 
   const fetchListings = async () => {
     try {
@@ -64,9 +162,33 @@ export default function AccommodationListings() {
     setIsFilterOpen(!isFilterOpen);
   };
 
+  const handleListingDelete = async (listingId: number) => {
+    const confirmed = window.confirm("Are you sure you want to delete this listing?");
+  
+    if (!confirmed) return;
+  
+    try {
+      const response = await fetch(`http://localhost:8000/api/delete_listing/${listingId}/`, {
+        method: 'DELETE',
+      });
+  
+      if (response.ok) {
+        window.location.reload();
+      } else {
+        console.error("Failed to delete listing");
+        alert("Failed to delete the listing. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error deleting listing:", error);
+      alert("An error occurred while deleting the listing.");
+    }
+  };  
+
   const filteredListings = listings.filter((listing) => {
     const matchesSearch = searchTerm
       ? listing.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        listing.city.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        listing.state.toLowerCase().includes(searchTerm.toLowerCase()) ||
         listing.poster_name.toLowerCase().includes(searchTerm.toLowerCase())
       : true;
 
@@ -74,7 +196,7 @@ export default function AccommodationListings() {
       (!filters.pets_allowed || String(listing.pets_allowed) === filters.pets_allowed) &&
       (!filters.bedrooms || listing.num_bedrooms.toString() === filters.bedrooms) &&
       (!filters.bathrooms || listing.num_bathrooms.toString() === filters.bathrooms) &&
-      (!filters.location || listing.address.toLowerCase().includes(filters.location.toLowerCase()));
+      (!filters.location || listing.address.toLowerCase().includes(filters.location.toLowerCase()) || listing.city.toLowerCase().includes(filters.location.toLowerCase()) || listing.state.toLowerCase().includes(filters.location.toLowerCase()));
 
     return matchesSearch && matchesFilters;
   });
@@ -138,7 +260,7 @@ export default function AccommodationListings() {
                 className="mr-4 rounded object-cover aspect-square"
               />
               <div>
-                <h3 className="text-lg font-bold">{listing.address}</h3>
+                <h3 className="text-lg font-bold">{listing.address}, {listing.city}, {listing.state}</h3>
                 <p className="text-sm text-muted-foreground">Posted by {listing.poster_name}</p>
               </div>
             </div>
@@ -148,6 +270,28 @@ export default function AccommodationListings() {
       <div className="w-1/2 p-6 border-r border-border overflow-y-auto" style={{ maxHeight: "100vh" }}>
         {selectedListing ? (
           <div className="flex flex-col items-center">
+            {loggedUsername === selectedListing.poster_name && (
+            <div className="self-end mb-2">
+              <Button
+                variant="destructive"
+                onClick={async () => {
+                  try {
+                    handleListingDelete(selectedListing.id);
+                    if (response.ok) {
+                      setListings((prev) => prev.filter((l) => l.id !== selectedListing.id));
+                      setSelectedListing(null);
+                    } else {
+                      console.error("Failed to delete listing");
+                    }
+                  } catch (err) {
+                    console.error("Error deleting listing:", err);
+                  }
+                }}
+              >
+                Delete
+              </Button>
+            </div>
+          )}
             <img
               src={
                 selectedListing.housing_image_base64
@@ -159,7 +303,7 @@ export default function AccommodationListings() {
               height={450}
               className="mb-4 rounded object-cover aspect-square"
             />
-            <h2 className="text-xl font-bold">{selectedListing.address}</h2>
+            <h2 className="text-xl font-bold">{selectedListing.address}, {selectedListing.city}, {selectedListing.state}</h2>
             <p className="text-muted-foreground mb-6">Posted by {selectedListing.poster_name}</p>
             <div className="w-full mb-6">
               <h3 className="text-lg font-semibold">Details</h3>

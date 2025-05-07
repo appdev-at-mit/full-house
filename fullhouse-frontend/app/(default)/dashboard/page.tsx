@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { Settings, Edit } from "lucide-react";
-import { MapContainer, TileLayer, Marker } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility";
@@ -22,33 +22,7 @@ const customIcon = new L.Icon({
   popupAnchor: [0, 32],
 });
 
-// Mock data for map pins
-const mapPins = [
-  { id: 1, city: "Cambridge, MA", num: 234, lat: 42.3601, lng: -71.0942 },
-  { id: 2, city: "New York, NY", num: 500, lat: 40.7128, lng: -74.0060 },
-  { id: 3, city: "Los Angeles, CA", num: 320, lat: 34.0522, lng: -118.2437 },
-  { id: 4, city: "Chicago, IL", num: 400, lat: 41.8781, lng: -87.6298 },
-  { id: 5, city: "Houston, TX", num: 180, lat: 29.7604, lng: -95.3698 },
-  { id: 6, city: "Phoenix, AZ", num: 150, lat: 33.4484, lng: -112.0740 },
-  { id: 7, city: "Philadelphia, PA", num: 210, lat: 39.9526, lng: -75.1652 },
-  { id: 8, city: "San Antonio, TX", num: 275, lat: 29.4241, lng: -98.4936 },
-  { id: 9, city: "San Diego, CA", num: 200, lat: 32.7157, lng: -117.1611 },
-  { id: 10, city: "Dallas, TX", num: 250, lat: 32.7767, lng: -96.7970 },
-  { id: 11, city: "Austin, TX", num: 220, lat: 30.2672, lng: -97.7431 },
-  { id: 12, city: "Jacksonville, FL", num: 160, lat: 30.3322, lng: -81.6557 },
-  { id: 13, city: "Fort Worth, TX", num: 190, lat: 32.7555, lng: -97.3330 },
-  { id: 14, city: "Columbus, OH", num: 130, lat: 39.9612, lng: -82.9988 },
-  { id: 15, city: "Indianapolis, IN", num: 145, lat: 39.7684, lng: -86.1580 },
-  { id: 16, city: "Charlotte, NC", num: 120, lat: 35.2271, lng: -80.8431 },
-  { id: 17, city: "Seattle, WA", num: 160, lat: 47.6062, lng: -122.3321 },
-  { id: 18, city: "Denver, CO", num: 140, lat: 39.7392, lng: -104.9903 },
-  { id: 19, city: "Washington, D.C.", num: 300, lat: 38.9072, lng: -77.0369 },
-  { id: 20, city: "Boston, MA", num: 260, lat: 42.3601, lng: -71.0589 }
-];
-
-
 type userData = {
-    username: string,
     additional_notes: string,
     age: number,
     bio: string,
@@ -77,6 +51,25 @@ type userData = {
     year: number,
 }
 
+type Accommodation = {
+  id: number;
+  poster_name: string;
+  housing_image_base64: string;
+  pets_allowed: boolean;
+  address: string;
+  city: string;
+  state: string;
+  num_roommates_needed: number;
+  start_date: string;
+  end_date: string;
+  rent: number;
+  has_ac: boolean;
+  has_wifi: boolean;
+  contact_info: string;
+  num_bedrooms: number;
+  num_bathrooms: number;
+};
+
 export default function UserProfileMap() {
   const [activityStatus, setActivityStatus] = useState(true);
   const [isEditing, setIsEditing] = useState({
@@ -97,7 +90,6 @@ export default function UserProfileMap() {
   const [sleepLightText, setSleepLightText] = useState("");
   const [profilePic, setProfilePic] = useState<string | null>(null);
 
-
   const [editableAbout, setEditableAbout] = useState<string>("");
   const [editableCity, setEditableCity] = useState<string>("");
   const [editableState, setEditableState] = useState<string>("");
@@ -110,6 +102,7 @@ export default function UserProfileMap() {
   const [editableSleepLight, setEditableSleepLight] = useState<number | null>(null);
   const [locationError, setLocationError] = useState<string>("");
 
+  const [listings, setListings] = useState<Accommodation[]>([]);
   const [isMounted, setIsMounted] = useState(false);
 
   const router = useRouter();
@@ -182,25 +175,95 @@ export default function UserProfileMap() {
       case 3: return "No preference";
       default: return "Unknown";
     }
-  };  
+  };
+
+  useEffect(() => {
+    const checkLoggedIn = async () => {
+      const token = localStorage.getItem("authKey");
+      if (!token) {
+        router.push("/");
+        return;
+      }
+  
+      try {
+        const response = await axios.get("/api/member_profile/", {
+          headers: { Authorization: `Token ${token}` },
+        });
+      } catch (error: any) {
+        if (error.response && error.response.status === 401) {
+          console.warn("Unauthorized — redirecting to login");
+          localStorage.removeItem("authKey");
+          router.push("/");
+        } else {
+          console.error("Unexpected error during auth check", error);
+        }
+      }
+    };
+  
+    checkLoggedIn();
+  }, [router]);  
 
   useEffect(() => {
     fetchUserData();
     setIsMounted(true);
   }, []);
 
+  useEffect(() => {
+    const fetchListings = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/api/listings/");
+        const data = await response.json(); // data is an array, not an object
+  
+        if (!Array.isArray(data) || data.length === 0) {
+          console.error("No listings found in response");
+          setListings([]);
+          return;
+        }
+  
+        const geocoded = await Promise.all(
+          data.map(async (listing: any) => {
+            const fullAddress = `${listing.address}, ${listing.city}, ${listing.state}`;
+            try {
+              const response = await fetch(
+                `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(fullAddress)}&format=json&limit=1`
+              );
+              const geo = await response.json();
+              console.log("Geocoded", fullAddress, "->", geo);
+  
+              if (geo.length > 0) {
+                return {
+                  ...listing,
+                  lat: parseFloat(geo[0].lat),
+                  lng: parseFloat(geo[0].lon),
+                };
+              }
+            } catch (err) {
+              console.error("Geocoding failed for:", fullAddress, err);
+            }
+  
+            return null;
+          })
+        );
+  
+        setListings(geocoded.filter(Boolean));
+      } catch (err) {
+        console.error("Failed to fetch listings:", err);
+        setListings([]);
+      }
+    };
+  
+    fetchListings();
+  }, []);
+
   const fetchUserData = async () => {
     try {
-      const token = localStorage.getItem("authKey"); // Example: Fetch user token from localStorage
-      console.log('token:', token);
+      const token = localStorage.getItem("authKey");
       const response = await axios.get("api/member_profile/", {
         headers: { 
             Authorization: `Token ${token}`,
-
         },
       });
       const data = response.data as userData;
-      console.log(data);
 
       setUsername(`${data.user.username}`);
       setUserClass(mapYearToLabel(data.year));
@@ -504,16 +567,28 @@ export default function UserProfileMap() {
 
       {/* Interactive Map */}
       <div className="w-2/3 p-6 relative">
+        <h2 className="text-xl font-bold">Available accommodations</h2>
         <MapContainer
           center={[42.3601, -71.0942]}
           zoom={5}
           style={{ height: "100%", width: "100%" }}
         >
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-          {mapPins.map((pin) => (
-            <Marker key={pin.id} position={[pin.lat, pin.lng]} icon={customIcon}>
-              <div>{pin.name}</div>
-              <div>{pin.about}</div>
+          {listings.map((listing) => (
+            <Marker
+              key={listing.id}
+              position={[listing.lat, listing.lng]}
+              icon={customIcon}
+              eventHandlers={{
+                click: () => router.push(`/listings?id=${listing.id}`)
+              }}
+            >
+              {/* <Popup>
+                <div>
+                  <h3 className="font-bold">{listing.address}</h3>
+                  <p>${listing.rent}/mo</p>
+                </div>
+              </Popup> */}
             </Marker>
           ))}
         </MapContainer>
