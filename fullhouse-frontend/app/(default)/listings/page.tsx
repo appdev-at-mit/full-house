@@ -82,7 +82,7 @@ export default function AccommodationListings() {
       }
   
       try {
-        const response = await axios.get("/api/member_profile/", {
+        await axios.get("/api/member_profile/", {
           headers: { Authorization: `Token ${token}` },
         });
       } catch (error: any) {
@@ -136,16 +136,6 @@ export default function AccommodationListings() {
       setLoggedUsername(data.user.username);
     } catch (error) {
       console.error("Error fetching user data:", error);
-    }
-  };
-
-  const fetchListings = async () => {
-    try {
-      const response = await fetch("http://localhost:8000/api/listings/");
-      const data = await response.json();
-      setListings(data);
-    } catch (error) {
-      console.error("Error fetching listings:", error);
     }
   };
 

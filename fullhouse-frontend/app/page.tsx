@@ -60,7 +60,6 @@ export default function LoginPage() {
       console.error("Error logging in:", error);
       alert("An error occurred during login.");
     }
-    // router.push("/dashboard");
   };
   
   // Redirects to signup form
@@ -72,9 +71,6 @@ export default function LoginPage() {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <div className="p-8 bg-white rounded-lg shadow-md text-center w-1/3">
         <h1 className="text-8xl mb-10">Full<br></br>House</h1>
-        {/* <div className="flex justify-center mb-4">
-          <Image src="/logo.png" alt="Logo" width={150} height={150} />
-        </div> */}
         <p className="text-gray-600 mb-6">
           Find your roommate for the summer / post-graduation
         </p>

@@ -10,8 +10,6 @@ export default function SettingsPage() {
   const router = useRouter();
   const [bio, setBio] = useState("Hi! I am a sophomore majoring in course 6-3. I like traveling, sightseeing, and trying new cuisines.");
   const [location, setLocation] = useState("Cambridge, MA");
-  const [activityStatus, setActivityStatus] = useState("Yes");
-  const [privacy, setPrivacy] = useState("Public");
   const [profilePicture, setProfilePicture] = useState(null);
   const [statusText, setStatusText] = useState("Yes");
   const [genderText, setGenderText] = useState("No Preference");
@@ -29,7 +27,7 @@ export default function SettingsPage() {
       }
   
       try {
-        const response = await axios.get("/api/member_profile/", {
+        await axios.get("/api/member_profile/", {
           headers: { Authorization: `Token ${token}` },
         });
       } catch (error: any) {
@@ -58,7 +56,6 @@ export default function SettingsPage() {
   
         setBio(data.bio || "");
         setLocation(`${data.city_name}, ${data.state_name}`);
-        setActivityStatus(data.rooming_status === 0 ? "No" : "Yes");
         setStatusText(String(data.rooming_status));
         setGenderText(String(data.gender));
         setCleanText(String(data.pref_cleanliness));
@@ -161,10 +158,6 @@ export default function SettingsPage() {
     }
   };  
 
-  const handlePreferencesChange = (key, value) => {
-    setPreferences((prev) => ({ ...prev, [key]: value }));
-  };
-
   return (
     <div className="flex flex-col h-screen p-6 bg-background items-center">
       <div className="flex mb-4 w-full max-w-md text-left">
@@ -220,32 +213,6 @@ export default function SettingsPage() {
           placeholder="Edit your location..."
           className="mb-4 w-full"
         />
-
-        {/* <label className="block text-sm font-semibold mb-1">Actively looking for roommate</label>
-        <select
-          value={activityStatus}
-          onChange={(e) => setActivityStatus(e.target.value)}
-          className="w-full mb-4 bg-white border border-gray-300 rounded-md p-2"
-        >
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select> */}
-
-        {/* <label className="block text-sm font-semibold mb-1">Privacy</label>
-        <select
-          value={privacy}
-          onChange={(e) => setPrivacy(e.target.value)}
-          className="w-full bg-white border border-gray-300 rounded-md p-2"
-        >
-          <option value="Public">Public</option>
-          <option value="Private">Partial (hide location)</option>
-          <option value="Private">Private</option>
-        </select>
-        <p className="mb-4 text-xs text-gray-500 text-left">
-          Public: Anyone can see your profile and location<br />
-          Partial: Anyone can see your profile but your location is hidden<br />
-          Private: Your profile and location are hidden
-        </p> */}
 
         <label className="block text-sm font-semibold">Preferences</label>
         <div className="w-full">

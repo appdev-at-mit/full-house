@@ -44,7 +44,7 @@ export default function PostListing() {
       }
   
       try {
-        const response = await axios.get("/api/member_profile/", {
+        await axios.get("/api/member_profile/", {
           headers: { Authorization: `Token ${token}` },
         });
       } catch (error: any) {

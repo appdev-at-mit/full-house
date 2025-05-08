@@ -8,7 +8,6 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
-import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
@@ -71,7 +70,6 @@ type Accommodation = {
 };
 
 export default function UserProfileMap() {
-  const [activityStatus, setActivityStatus] = useState(true);
   const [isEditing, setIsEditing] = useState({
     about: false,
     location: false,
@@ -186,7 +184,7 @@ export default function UserProfileMap() {
       }
   
       try {
-        const response = await axios.get("/api/member_profile/", {
+        await axios.get("/api/member_profile/", {
           headers: { Authorization: `Token ${token}` },
         });
       } catch (error: any) {
@@ -582,12 +580,6 @@ export default function UserProfileMap() {
                 click: () => router.push(`/listings?id=${listing.id}`)
               }}
             >
-              {/* <Popup>
-                <div>
-                  <h3 className="font-bold">{listing.address}</h3>
-                  <p>${listing.rent}/mo</p>
-                </div>
-              </Popup> */}
             </Marker>
           ))}
         </MapContainer>
