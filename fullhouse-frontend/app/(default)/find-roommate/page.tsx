@@ -125,7 +125,7 @@ export default function UserProfileMap() {
       }
   
       try {
-        await axios.get("/api/member_profile/", {
+        const response = await axios.get("/api/member_profile/", {
           headers: { Authorization: `Token ${token}` },
         });
       } catch (error: any) {
@@ -145,6 +145,7 @@ export default function UserProfileMap() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
+        const token = localStorage.getItem("authKey");
         const response = await fetch("http://localhost:8000/api/member_profiles/", {
           method: "POST",
           headers: {
@@ -155,7 +156,7 @@ export default function UserProfileMap() {
         const data = await response.json();
   
         const users = data.users.map((u: any) => ({
-          id: u.user.username,  
+          id: u.user.username,  // set ID to username
           profilePicture: u.profile_pic || null,
           username: u.user.username,
           userClass: mapYearToLabel(u.year),
@@ -167,6 +168,8 @@ export default function UserProfileMap() {
             status: mapStatusToLabel(u.rooming_status),
             gender: mapGenderToLabel(u.gender),
             year: mapYearToLabel(u.year),
+            // sleepTime: mapSleepTime(u.sleep_time_weekday),
+            // wakeTime: mapWakeTime(u.wake_time_weekday),
             cleanliness: mapCleanlinessToLabel(u.pref_cleanliness),
             temperature: mapTempToLabel(u.pref_temperature),
             guestPolicy: mapGuestPolicyToLabel(u.pref_day_guests),
@@ -192,7 +195,6 @@ export default function UserProfileMap() {
     setSelectedUser(user);
   };
 
-  // TODO: used once messaging is implemented
   const handleMessageClick = (userId: number) => {
     router.push(`/messages?user=${userId}`);
   };
@@ -291,8 +293,7 @@ export default function UserProfileMap() {
               <h3 className="text-lg font-semibold">Location</h3>
               <p className="text-gray-700">{selectedUser.locationText}</p>
             </div>
-            {/* TODO: change once we do both active and inactive
-            <div className="w-full flex items-center justify-between mb-6">
+            {/* <div className="w-full flex items-center justify-between mb-6">
               <h3 className="text-lg font-semibold">Actively looking for a roommate</h3>
               <span
                 className={`text-sm px-2 py-1 rounded ${
@@ -313,8 +314,7 @@ export default function UserProfileMap() {
                 ))}
               </ul>
             </div>
-            {/* TODO: uncomment once messaging is added
-            <Button
+            {/* <Button
               variant="outline"
               className="mt-2 w-full"
               onClick={() => handleMessageClick(selectedUser.id)}
