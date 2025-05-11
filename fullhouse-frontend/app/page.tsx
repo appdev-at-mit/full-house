@@ -65,7 +65,7 @@ export default function LoginPage() {
   
   // Redirects to signup form
   const handleSignupRedirect = () => {
-    router.push("/create-account"); // Assumes you have a signup page at this route
+    router.push("/signup"); // Assumes you have a signup page at this route
   };
 
   return (

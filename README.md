@@ -1,7 +1,7 @@
 # Full House
 Full House is a web application to help students find roommates and housing for the summer and post-graduation. Students can create a profile with information about their location, when they are looking for a roommate, and their roommate preferences. Users can search for and message other users to coordinate housing plans.
 
-Additionally, users can create accommodation listins on Full House. For instance, if a user has an apartment that they would like to share with another person, they can create a listing with the accommodation details.
+Additionally, users can create accomodation listins on Full House. For instance, if a user has an apartment that they would like to share with another person, they can create a listing with the accomodation details.
 
 ## Getting started
 If you do not have git, install here: https://git-scm.com/downloads
