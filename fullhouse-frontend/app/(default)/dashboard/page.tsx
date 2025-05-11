@@ -360,12 +360,12 @@ export default function UserProfileMap() {
     }
   };  
 
-  const handleSearchHousemateClick = () => {
-    router.push("/profile");
+  const handleSearchRoommateClick = () => {
+    router.push("/find-roommate");
   };
 
   const handleSearchHousingClick = () => {
-    router.push("/listings");
+    router.push("/find-housing");
   };
 
   if (!isMounted) {
@@ -393,8 +393,8 @@ export default function UserProfileMap() {
             </div>
           </div>
 
-          <Button variant="outline" className="mb-4" onClick={handleSearchHousemateClick}>
-            Search for housemate
+          <Button variant="outline" className="mb-4" onClick={handleSearchRoommateClick}>
+            Search for roommate
           </Button>
 
           <Button variant="outline" className="mb-4" onClick={handleSearchHousingClick}>

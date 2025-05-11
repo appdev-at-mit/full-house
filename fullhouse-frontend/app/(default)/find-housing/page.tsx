@@ -214,7 +214,7 @@ export default function AccommodationListings() {
           <Button
             variant="outline"
             className="ml-4"
-            onClick={() => router.push("/postlisting")}
+            onClick={() => router.push("/create-listing")}
           >
             <Plus className="mr-2 h-4 w-4" /> Post Listing
           </Button>

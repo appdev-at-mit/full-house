@@ -109,7 +109,7 @@ export default function PostListing() {
       });
 
       if (response.ok) {
-        router.push("/listings");
+        router.push("/find-housing");
       } else {
         console.error("Error creating listing");
         setError("Failed to create listing. Please try again.");
@@ -251,7 +251,7 @@ export default function PostListing() {
           <Button
             type="button"
             variant="outline"
-            onClick={() => router.push("/listings")}
+            onClick={() => router.push("/find-housing")}
           >
             Cancel
           </Button>
