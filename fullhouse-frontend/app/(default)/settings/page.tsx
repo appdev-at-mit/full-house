@@ -11,7 +11,6 @@ export default function SettingsPage() {
   const [bio, setBio] = useState("Hi! I am a sophomore majoring in course 6-3. I like traveling, sightseeing, and trying new cuisines.");
   const [location, setLocation] = useState("Cambridge, MA");
   const [activityStatus, setActivityStatus] = useState("Yes");
-  const [privacy, setPrivacy] = useState("Public");
   const [profilePicture, setProfilePicture] = useState(null);
   const [statusText, setStatusText] = useState("Yes");
   const [genderText, setGenderText] = useState("No Preference");
@@ -117,7 +116,7 @@ export default function SettingsPage() {
       const token = localStorage.getItem("authKey");
   
       const [city, state] = location.split(",").map((s) => s.trim());
-      const profilePicBase64 = profilePicture?.split(",")[1]; // remove "data:image/jpeg;base64,"
+      const profilePicBase64 = profilePicture?.split(",")[1];
   
       const payload = {
         bio,
@@ -128,7 +127,7 @@ export default function SettingsPage() {
         pref_cleanliness: Number(cleanText),
         pref_temperature: Number(tempText),
         pref_day_guests: Number(guestText),
-        pref_night_guests: Number(guestText), // reuse if you don't have a second field
+        pref_night_guests: Number(guestText),
         pref_sleep_light: Number(sleepLightText),
         profile_pic: profilePicBase64 || undefined,
       };
@@ -220,32 +219,6 @@ export default function SettingsPage() {
           placeholder="Edit your location..."
           className="mb-4 w-full"
         />
-
-        {/* <label className="block text-sm font-semibold mb-1">Actively looking for roommate</label>
-        <select
-          value={activityStatus}
-          onChange={(e) => setActivityStatus(e.target.value)}
-          className="w-full mb-4 bg-white border border-gray-300 rounded-md p-2"
-        >
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select> */}
-
-        {/* <label className="block text-sm font-semibold mb-1">Privacy</label>
-        <select
-          value={privacy}
-          onChange={(e) => setPrivacy(e.target.value)}
-          className="w-full bg-white border border-gray-300 rounded-md p-2"
-        >
-          <option value="Public">Public</option>
-          <option value="Private">Partial (hide location)</option>
-          <option value="Private">Private</option>
-        </select>
-        <p className="mb-4 text-xs text-gray-500 text-left">
-          Public: Anyone can see your profile and location<br />
-          Partial: Anyone can see your profile but your location is hidden<br />
-          Private: Your profile and location are hidden
-        </p> */}
 
         <label className="block text-sm font-semibold">Preferences</label>
         <div className="w-full">

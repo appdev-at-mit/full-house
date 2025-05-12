@@ -30,7 +30,7 @@ type FormFields = {
 
 export default function PostListing() {
   const [formFields, setFormFields] = useState<FormFields>({});
-  const [formData, setFormData] = useState<{ [key: string]: any }>({});
+  const [formData, setFormData] = useState<{ [key: string]: FormField }>({});
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -47,7 +47,7 @@ export default function PostListing() {
         const response = await axios.get("/api/member_profile/", {
           headers: { Authorization: `Token ${token}` },
         });
-      } catch (error: any) {
+      } catch (error) {
         if (error.response && error.response.status === 401) {
           console.warn("Unauthorized — redirecting to login");
           localStorage.removeItem("authKey");
@@ -78,8 +78,7 @@ export default function PostListing() {
       }
       const data = await response.json();
       setFormFields(data);
-      // Initialize form data with empty values
-      const initialData: { [key: string]: any } = {};
+      const initialData: { [key: string]: FormField } = {};
       Object.keys(data).forEach((key) => {
         initialData[key] = data[key].type === "checkbox" ? false : "";
       });
@@ -109,7 +108,7 @@ export default function PostListing() {
       });
 
       if (response.ok) {
-        router.push("/listings");
+        router.push("/find-housing");
       } else {
         console.error("Error creating listing");
         setError("Failed to create listing. Please try again.");
@@ -122,7 +121,7 @@ export default function PostListing() {
     }
   };
 
-  const handleChange = (key: string, value: any) => {
+  const handleChange = (key: string, value: FormField) => {
     setFormData((prev) => ({
       ...prev,
       [key]: value,
@@ -138,7 +137,7 @@ export default function PostListing() {
     label =
       fields[label] || label;
   
-    const isRequired = true; // add asterisk to all fields
+    const isRequired = true;
 
     if (field.type === "date") {
       const today = new Date().toISOString().split("T")[0];
@@ -251,7 +250,7 @@ export default function PostListing() {
           <Button
             type="button"
             variant="outline"
-            onClick={() => router.push("/listings")}
+            onClick={() => router.push("/find-housing")}
           >
             Cancel
           </Button>

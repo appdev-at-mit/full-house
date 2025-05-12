@@ -8,7 +8,9 @@ interface FormField {
   name: string;
   label: string;
   type: string;
-}
+  required: boolean;
+  options?: { value: string | number; label: string }[];
+} 
 
 const fields: Record<string, string> = {
   "Year": "Class year",
@@ -63,12 +65,57 @@ const SignupPage: React.FC = () => {
   };
 
   const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const newErrors: { [key: string]: string[] } = {};
+
+    // Required field check
+    formFields.forEach((field) => {
+      const isRequired = field.required;
+      const value = formData[field.name];
+
+      if (isRequired && (value === "" || value === null || value === undefined)) {
+        newErrors[field.name] = ["This field is required."];
+      }
+    });
+
+    // Email validation
     if (formData["email"] && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData["email"] as string)) {
-      setErrorMessages({ email: ["Please enter a valid email address."] });
+      newErrors["email"] = ["Please enter a valid email address."];
+    }
+
+    // Phone number validation
+    if (formData["Phone num"] && !/^\d{10,}$/.test(formData["Phone num"] as string)) {
+      newErrors["Phone num"] = ["Please enter a valid phone number (10+ digits)."];
+    }
+
+    // Password strength check (min 8 chars, 1 upper, 1 lower, 1 digit)
+    if (
+      formData["password"] &&
+      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d!@#$%^&*()_+]{8,}$/.test(formData["password"] as string)
+    ) {
+      newErrors["password"] = [
+        "Password must be at least 8 characters long and include uppercase, lowercase, and a number.",
+      ];
+    }
+
+    // Age validation
+    const minAge = parseInt(formData["Pref age min"] as string);
+    const maxAge = parseInt(formData["Pref age max"] as string);
+
+    if (!isNaN(minAge) && minAge < 18) {
+      newErrors["Pref age min"] = ["Minimum age must be at least 18."];
+    }
+    if (!isNaN(maxAge) && maxAge < 18) {
+      newErrors["Pref age max"] = ["Maximum age must be at least 18."];
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrorMessages(newErrors);
       return;
     }
-    
-    e.preventDefault();
+
+    // Submit
     const formEncodedData = new URLSearchParams();
     Object.entries(formData).forEach(([key, value]) => {
       formEncodedData.append(key, String(value));
@@ -76,9 +123,7 @@ const SignupPage: React.FC = () => {
 
     axios
       .post("http://127.0.0.1:8000/api/member_signup/", formEncodedData, {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
       })
       .then((response) => {
         setSuccessMessage(response.data.message);
@@ -89,7 +134,7 @@ const SignupPage: React.FC = () => {
             return acc;
           }, {} as { [key: string]: string | boolean })
         );
-		redirectToLoginPage();
+        redirectToLoginPage();
       })
       .catch((error) => {
         if (error.response && error.response.data) {
@@ -99,6 +144,7 @@ const SignupPage: React.FC = () => {
         }
       });
   };
+
 
   const redirectToLoginPage = ()  => {
 	  router.push("/")
@@ -128,7 +174,6 @@ const SignupPage: React.FC = () => {
                 {isRequired && <span className="text-red-600">*</span>}
               </label>
 
-              {/* Convert checkboxes to Yes/No select */}
               {field.type === "checkbox" && (
                 <select
                   id={field.name}

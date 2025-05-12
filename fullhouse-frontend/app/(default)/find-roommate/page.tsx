@@ -128,7 +128,7 @@ export default function UserProfileMap() {
         const response = await axios.get("/api/member_profile/", {
           headers: { Authorization: `Token ${token}` },
         });
-      } catch (error: any) {
+      } catch (error) {
         if (error.response && error.response.status === 401) {
           console.warn("Unauthorized — redirecting to login");
           localStorage.removeItem("authKey");
@@ -155,7 +155,7 @@ export default function UserProfileMap() {
         });
         const data = await response.json();
   
-        const users = data.users.map((u: any) => ({
+        const users = data.users.map((u) => ({
           id: u.user.username,  // set ID to username
           profilePicture: u.profile_pic || null,
           username: u.user.username,
@@ -314,13 +314,6 @@ export default function UserProfileMap() {
                 ))}
               </ul>
             </div>
-            {/* <Button
-              variant="outline"
-              className="mt-2 w-full"
-              onClick={() => handleMessageClick(selectedUser.id)}
-            >
-              Message
-            </Button> */}
             <div className="w-full mt-6">
               <h3 className="text-lg font-semibold">Contact</h3>
               <p className="text-gray-700">{selectedUser.email}</p>

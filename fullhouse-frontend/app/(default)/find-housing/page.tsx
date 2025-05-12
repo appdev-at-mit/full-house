@@ -85,7 +85,7 @@ export default function AccommodationListings() {
         const response = await axios.get("/api/member_profile/", {
           headers: { Authorization: `Token ${token}` },
         });
-      } catch (error: any) {
+      } catch (error) {
         if (error.response && error.response.status === 401) {
           console.warn("Unauthorized — redirecting to login");
           localStorage.removeItem("authKey");
@@ -125,7 +125,7 @@ export default function AccommodationListings() {
 
   const fetchUser = async () => {
     try {
-      const token = localStorage.getItem("authKey"); // Example: Fetch user token from localStorage
+      const token = localStorage.getItem("authKey");
       const response = await axios.get("api/member_profile/", {
         headers: { 
             Authorization: `Token ${token}`,
@@ -224,7 +224,7 @@ export default function AccommodationListings() {
           <Button
             variant="outline"
             className="ml-4"
-            onClick={() => router.push("/postlisting")}
+            onClick={() => router.push("/create-listing")}
           >
             <Plus className="mr-2 h-4 w-4" /> Post Listing
           </Button>

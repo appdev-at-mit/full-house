@@ -14,7 +14,6 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import axios from '../../../axios.config';
 
-// Fix for missing default icons in Leaflet
 const customIcon = new L.Icon({
   iconUrl: "/map-marker.png",
   iconSize: [32, 32],
@@ -189,7 +188,7 @@ export default function UserProfileMap() {
         const response = await axios.get("/api/member_profile/", {
           headers: { Authorization: `Token ${token}` },
         });
-      } catch (error: any) {
+      } catch (error) {
         if (error.response && error.response.status === 401) {
           console.warn("Unauthorized — redirecting to login");
           localStorage.removeItem("authKey");
@@ -221,7 +220,7 @@ export default function UserProfileMap() {
         }
   
         const geocoded = await Promise.all(
-          data.map(async (listing: any) => {
+          data.map(async (listing) => {
             const fullAddress = `${listing.address}, ${listing.city}, ${listing.state}`;
             try {
               const response = await fetch(
@@ -362,12 +361,12 @@ export default function UserProfileMap() {
     }
   };  
 
-  const handleSearchHousemateClick = () => {
-    router.push("/profile");
+  const handleSearchRoommateClick = () => {
+    router.push("/find-roommate");
   };
 
   const handleSearchHousingClick = () => {
-    router.push("/listings");
+    router.push("/find-housing");
   };
 
   if (!isMounted) {
@@ -395,8 +394,8 @@ export default function UserProfileMap() {
             </div>
           </div>
 
-          <Button variant="outline" className="mb-4" onClick={handleSearchHousemateClick}>
-            Search for housemate
+          <Button variant="outline" className="mb-4" onClick={handleSearchRoommateClick}>
+            Search for roommate
           </Button>
 
           <Button variant="outline" className="mb-4" onClick={handleSearchHousingClick}>
