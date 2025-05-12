@@ -203,25 +203,3 @@ class MemberProfileView(APIView):
             serializer.save()
             return JsonResponse(serializer.data, status=200)
         return JsonResponse(serializer.errors, status=400)
-
-    # def dump(self, request, format=None):
-    #     request_data = JSONParser().parse(request)
-    #     only_active = request_data.get("only_active", True)
-
-    #     filter_criteria = {"rooming_status": Member.Status.INACTIVE} if only_active else {"private_location": True}
-    #     all_users = Member.objects.exclude(**filter_criteria)
-
-    #     serialized = serializers.serialize("json", all_users)
-    #     return JsonResponse({"users": json.loads(serialized)}, safe=False)
-
-
-# @csrf_exempt
-# def test_tiny(request):
-#     if request.method == "POST":
-#         tiny_data = JSONParser().parse(request)
-#         serializer = TinySerializer(data=tiny_data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return JsonResponse(serializer.data, status=201)
-#         return JsonResponse(serializer.errors, status=400)
-#     return JsonResponse({"error": "GET method not allowed for this endpoint"}, status=405)
